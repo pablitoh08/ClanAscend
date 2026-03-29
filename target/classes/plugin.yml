@@ -1,0 +1,31 @@
+name: ClanAscend
+version: 1.8
+main: org.pablito.clanAscend.ClanAscend
+api-version: 1.13
+softdepend: [PlaceholderAPI]
+commands:
+  clan:
+    description: Comandos principales de clanes
+    usage: /<command> [help|create|invite|accept|leave|kick|ally|allies|disband|claim|unclaim|info|list|chat|gui|members|settings|top]
+    aliases: [cl]
+  clanadmin:
+    description: Comandos de administración de clanes
+    usage: /<command> [reload|setpower|setlevel|disband|addmember|info|forceunclaim|help]
+    permission: clanascend.admin
+    aliases: [ca]
+permissions:
+  clanascend.admin:
+    description: Permite usar comandos de administración de clanes
+    default: op
+  clanascend.reload:
+    description: Permite recargar la configuración
+    default: op
+  clanascend.disband.others:
+    description: Permite disolver clanes de otros jugadores
+    default: op
+  clanascend.bypass.claims:
+    description: Permite ignorar la protección de claims
+    default: op
+  clanascend.update:
+    description: Receive update notifications
+    default: op

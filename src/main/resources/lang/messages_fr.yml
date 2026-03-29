@@ -1,0 +1,467 @@
+prefix: '&8[&6ClanAscend&8] &7'
+clan:
+  created: '&aLe clan &6{clan} &aété créé avec succès avec le tag &7[{tag}&7]&a.'
+  created_broadcast: '&6{player} &7a créé le clan &6{clan} &7[&6{tag}&7]&7!'
+  already_in_clan: '&cVous êtes déjà dans un clan.'
+  not_in_clan: '&cVous n''êtes pas dans un clan.'
+  not_leader: '&cSeul le chef du clan peut faire cela.'
+  no_permission: '&cVous n''avez pas la permission de faire cela.'
+  no_permission_invite: '&cVous n''avez pas la permission d''inviter des joueurs.'
+  no_permission_kick: '&cVous n''avez pas la permission d''expulser des membres.'
+  no_permission_claim: '&cVous n''avez pas la permission de revendiquer/libérer des terres.'
+  max_members: '&cVotre clan a atteint le nombre maximum de membres.'
+  target_already_in_clan: '&cCe joueur est déjà dans un clan.'
+  invite_sent: '&aInvitation envoyée à &e{player}&a.'
+  invite_received: '&eVous avez été invité à rejoindre &6{clan} &7(de &f{player}&7)&e.'
+  disbanded: '&cVotre clan a été dissous.'
+  cannot_leave_as_leader: '&cVous ne pouvez pas quitter votre propre clan. Utilisez &e/clan disband&c.'
+  left: '&aVous avez quitté le clan.'
+  kicked: '&cVous avez été expulsé du clan.'
+  player_joined: '&a{player} a rejoint le clan.'
+  player_left: '&e{player} a quitté le clan.'
+  player_kicked: '&cVous avez expulsé {player} du clan.'
+  player_kicked_clan: '&c{player} a été expulsé par {by}.'
+  toggled_open: '&aLe clan est maintenant {state}&a.'
+  friendly_fire_enabled: '&aFeu allié : &cACTIVÉ&a.'
+  friendly_fire_disabled: '&aFeu allié : &aDÉSACTIVÉ&a.'
+  member_demoted: '&eMembre rétrogradé au rang de membre normal.'
+  member_promoted: '&aMembre promu officier.'
+  leadership_transferred: '&6Commandement transféré avec succès.'
+  kick:
+    not_in_your_clan: '&cCe joueur n''est pas dans votre clan.'
+    cannot_kick_leader: '&cVous ne pouvez pas expulser le chef du clan.'
+  limit_set: '&aLimite de membres mise à jour à &e{max}&a.'
+  description_set: '&aVous avez mis à jour la description du clan.'
+  info:
+    line_members: '&eMembres : &7{members}/{max_members}'
+    line_level: '&eNiveau : &7{level} &8(&eEXP : {experience}&8)'
+    line_power: '&ePuissance : &7{power}/{max_power}'
+    line_description: '&eDescription : &7{description}'
+    line_allies: '&eAlliés : &7{allies}'
+    header: '&6=== Infos du Clan : &e{clan} &6==='
+    line_claims: '&eRevendications : &7{claims}/{max_claims}'
+  limit_too_low: '&cLa limite minimale de membres est &e{min}&c.'
+  no_description: '&7Aucune description.'
+claim:
+  claimed: '&aChunk revendiqué avec succès.'
+  unclaimed: '&aChunk libéré avec succès.'
+  already_claimed: '&cCe chunk est déjà revendiqué.'
+  not_your_claim: '&cCe chunk n''est pas revendiqué par votre clan.'
+  max_claims: '&cVotre clan ne peut pas revendiquer plus de chunks.'
+  insufficient_power: '&cVotre clan n''a pas assez de puissance pour revendiquer.'
+  not_claimed: '&cCe chunk n''est pas revendiqué.'
+  clan_missing_for_claim: '&cImpossible de trouver le clan pour cette revendication.'
+  enter: '&aVous êtes entré sur le territoire de &e{clan}&a.'
+  exit: '&7Vous avez quitté le territoire de &e{clan}&7.'
+  disabled: "&cLe système de territoire est désactivé sur ce serveur."
+power:
+  gain_title: '&a+{amount} Puissance'
+  gain_subtitle: '&7Votre clan a gagné de la puissance'
+  loss_title: '&c-{amount} Puissance'
+  loss_subtitle: '&7Votre clan a perdu de la puissance'
+  levelup_title: '&6&lNIVEAU {level}!'
+  levelup_subtitle: '&eVotre clan a gagné un niveau'
+  increased: '&a+{amount} puissance &7(Total : {total})'
+  decreased: '&c-{amount} puissance &7(Total : {total})'
+  low_power: '&cVotre clan n''a pas assez de puissance.'
+chat:
+  format: '&8[&6Clan&8] &7{player}&8: &f{message}'
+  toggled_on: '&aChat de clan activé.'
+  toggled_off: '&cChat de clan désactivé.'
+error:
+  no_permission: '&cVous n''avez pas la permission de faire cela.'
+  player_offline: '&cCe joueur n''est pas en ligne.'
+  clan_not_found: '&cClan non trouvé.'
+  clan_exists: '&cUn clan avec ce nom ou ce tag existe déjà.'
+  unknown_command: '&cCommande inconnue. Utilisez &e/clan help&c.'
+  gui_not_available: '&cL''interface graphique n''est pas disponible actuellement.'
+  chat_not_available: '&cLe chat de clan n''est pas disponible actuellement.'
+  invalid_number: '&cCette valeur doit être un nombre.'
+invite:
+  accept_button: '&a&l[ACCEPTER]'
+  deny_button: '&c&l[REFUSER]'
+  buttons_separator: ' &7| '
+  accept_hover: '&aCliquez pour accepter l''invitation'
+  deny_hover: '&cCliquez pour refuser l''invitation'
+  type_hint: '&7Vous pouvez aussi taper : &a/clan accept {clan} &7ou &c/clan decline {clan}'
+  accepted: '&aVous avez accepté l''invitation à rejoindre &6{clan}&a.'
+  denied: '&cVous avez refusé l''invitation.'
+  expired: '&cVous n''avez aucune invitation en attente, ou elles ont expiré.'
+  not_matching: '&cCette invitation ne correspond pas à ce clan.'
+gui:
+  prompts:
+    new_description: '&eTapez la nouvelle description du clan dans le chat :'
+    new_maxmembers: '&eTapez la nouvelle limite de membres dans le chat (5-50) :'
+    cancelled: '&cAction annulée.'
+    cancel_hint: '&7Tapez &c cancel &7pour annuler.'
+    description_updated: '&aDescription du clan mise à jour.'
+    maxmembers_updated: '&aLimite de membres mise à jour à &e{max}&a.'
+  titles:
+    main: '&8Clan : {clan}'
+    members: '&8Membres - {clan}'
+    claims: '&8Revendications - {clan}'
+    settings: '&8Paramètres - {clan}'
+    chest: '&8Coffre de Clan - {clan}'
+  common:
+    back: '&aRetour'
+    close: '&cFermer'
+  main:
+    power_chat: '&ePuissance du clan : &a{power}&7/&2{max}'
+    items:
+      info:
+        name: '&6&lInfos du Clan &7[{tag}&7]'
+        lore:
+          - '&7Chef : &e{leader}'
+          - '&7Membres : &e{members}&7/&e{max_members}'
+          - '&7Puissance : &e{power}&7/&e{max_power}'
+          - '&7Revendications : &e{claims}&7/&e{max_claims}'
+          - ''
+          - '&7Votre rôle : {role}'
+          - '&7Description :'
+          - '&f{desc}'
+      members:
+        name: '&a&lMembres'
+        lore:
+          - '&7Ouvrir la liste des membres.'
+          - '&7Total : &e{total}'
+          - '&7En ligne : &a{online}'
+          - ''
+          - '&eCliquez pour ouvrir'
+      claims:
+        name: '&2&lTerritoire'
+        lore:
+          - '&7Gérer les revendications.'
+          - '&7Revendications : &e{claims}&7/&e{max}'
+          - ''
+          - '&eCliquez pour ouvrir'
+      power:
+        name: '&e&lPuissance du Clan'
+        lore:
+          - '&7Puissance : &e{power}&7/&e{max}'
+          - ''
+          - '&7Gagnez de la puissance via les kills et événements.'
+      chest:
+        name: '&6&lCoffre de Clan'
+        lore:
+          - '&7Stockage partagé pour votre clan.'
+          - ''
+          - '&eCliquez pour ouvrir'
+      settings:
+        name: '&d&lParamètres'
+        lore:
+          - '&7Options du clan.'
+          - ''
+          - '&eCliquez pour ouvrir'
+      chat:
+        name: '&b&lChat de Clan'
+        lore:
+          - '&7Activer/désactiver le chat de clan.'
+          - ''
+          - '&eCliquez pour activer/désactiver'
+      top:
+        name: '&e&lMeilleurs Clans'
+        lore:
+          - '&7Afficher le classement dans le chat.'
+          - ''
+          - '&eCliquez pour afficher'
+      disband:
+        name: '&4&lDissoudre le Clan'
+        lore:
+          - '&cDissout le clan définitivement.'
+          - '&cCette action est irréversible.'
+          - ''
+          - '&eCliquez pour continuer'
+  members:
+    member_name: '&e{player}'
+    member_lore:
+      - '&7Rôle : {role}'
+      - '&7Statut : {status}'
+      - ''
+      - '{extra}'
+    roles:
+      leader: '&6&lCHEF'
+      officer: '&a&lOFFICIER'
+      member: '&7Membre'
+    status:
+      online: '&aEn ligne'
+      offline: '&cHors ligne'
+    extra:
+      leader_hint: '&eCliquez pour gérer'
+      no_perm: '&7Pas de permission'
+  claims:
+    info:
+      name: '&eInfos Revendications'
+      lore:
+        - '&7Revendications : &e{claims}&7/&e{max}'
+        - '&7Puissance : &e{power}&7/&e{max_power}'
+        - '&7Coût de revendication : &e{cost}'
+        - '&7Remboursement libération : &e{refund}'
+    claim_button:
+      name: '&a&lRevendiquer le chunk actuel'
+      lore:
+        - '&7Coût : &e{cost} puissance'
+        - '&eCliquez pour revendiquer'
+    unclaim_button:
+      name: '&c&lLibérer le chunk actuel'
+      lore:
+        - '&7Remboursement : &e{refund} puissance'
+        - '&eCliquez pour libérer'
+    claimed_item:
+      name: '&aTerritoire revendiqué'
+      lore:
+        - '&7Un chunk revendiqué par votre clan'
+  settings:
+    chat_edit_description: '&eTapez la nouvelle description du clan dans le chat :'
+    chat_edit_max_members: '&eTapez la nouvelle limite de membres dans le chat :'
+    description:
+      name: '&eDescription du Clan'
+      lore:
+        - '&7Actuelle : &f{desc}'
+    open:
+      name_open: '&eClan &aOuvert'
+      name_closed: '&eClan &cFermé'
+      lore:
+        - '&7Statut : {status}'
+        - ''
+        - '&eCliquez pour changer'
+      status_open: '&aOUVERT'
+      status_closed: '&cFERMÉ'
+    friendlyfire:
+      name_on: '&eFeu allié : &cActivé'
+      name_off: '&eFeu allié : &aDésactivé'
+      lore:
+        - '&7Dégâts entre membres : {state}'
+        - ''
+        - '&eCliquez pour changer'
+      state_on: '&cOUI'
+      state_off: '&aNON'
+    maxmembers:
+      name: '&eLimite de Membres'
+      lore:
+        - '&7Actuelle : &e{max}'
+        - '&7Plage : &e5-50'
+  confirm_disband:
+    title: '&8Confirmer la dissolution'
+    info:
+      name: '&4&lÊtes-vous sûr ?'
+      lore:
+        - '&cCela dissoudra le clan définitivement.'
+        - '&cCette action est irréversible.'
+    accept:
+      name: '&a&lCONFIRMER'
+      lore:
+        - '&7Dissoudre le clan maintenant.'
+    cancel:
+      name: '&c&lANNULER'
+      lore:
+        - '&7Retour.'
+  members-title: '&8Membres - {clan}'
+  main-title: '&8Clan : {clan}'
+  settings-title: '&8Paramètres - {clan}'
+  claims-title: '&8Revendications - {clan}'
+  manage_member:
+    title: '&8Gérer : &e{player}'
+    info:
+      banned_yes: '&cOui'
+      banned_no: '&aNon'
+    player:
+      name: '&e{player}'
+      lore:
+        - '&7Rôle : &f{role}'
+        - '&7Statut : &f{online}'
+        - '&7UUID : &f{uuid}'
+        - '&7Banni : &f{banned}'
+    promote:
+      name: '&aPromouvoir Officier'
+      lore:
+        - '&7Fait de ce membre un officier.'
+        - '&eCliquez pour promouvoir'
+    demote:
+      name: '&eRétrograder Membre'
+      lore:
+        - '&7Supprime le rang d''officier.'
+        - '&eCliquez pour rétrograder'
+    transfer:
+      name: '&6Transférer le Commandement'
+      lore:
+        - '&7Fait de ce joueur le chef du clan.'
+        - '&cCette action est irréversible.'
+        - '&eCliquez pour transférer'
+    kick:
+      name: '&cExpulser du Clan'
+      lore:
+        - '&7Expulse le joueur même hors ligne.'
+        - '&eCliquez pour expulser'
+    ban:
+      name: '&4Bannir du Clan'
+      lore:
+        - '&7Expulse et bloque sa réintégration.'
+        - '&cAction immédiate.'
+        - '&eCliquez pour bannir'
+    disabled:
+      name: '&e&lNon disponible'
+      lore:
+        - '&7Cette option ne peut pas être utilisée actuellement.'
+        - '&7Raison : &f{reason}'
+      reason_self: '&cVous ne pouvez pas vous gérer vous-même.'
+      reason_leader: '&cVous ne pouvez pas gérer le chef du clan.'
+      reason_no_perm: '&cVous n''avez pas assez de permissions.'
+top:
+  header: '&6&lTop 10 Clans par Puissance'
+  empty: '&7Aucun clan à afficher.'
+  line: '{color}#{rank} &8- &e{name} &7[{tag}&7] &8| &fPuissance : &a{power} &8| &fMembres :
+    &e{members}'
+  footer: '&7----------------------------------------'
+alliance:
+  cannot_ally_self: '&cVous ne pouvez pas vous allier avec vous-même.'
+  already_allied: '&eVous êtes déjà allié avec &6{clan}&e.'
+  limit_reached: '&cVotre clan a déjà atteint le nombre maximum d''alliés : &6{limit}&c.'
+  target_limit_reached: '&cLe clan &6{clan} &ca déjà atteint le nombre maximum d''alliés : &6{limit}&c.'
+  request_already_sent: '&eVous avez déjà envoyé une demande d''alliance à &6{clan}&e.'
+  request_sent: '&aVous avez envoyé une demande d''alliance à &6{clan}&a.'
+  request_received: '&aLe clan &6{clan} &aa envoyé une demande d''alliance à votre clan. &7(Envoyée par {player})'
+  clickable_prompt: '&eUtilisez ces commandes pour répondre à la demande d''alliance de &6{clan}&e.'
+  no_request_from: '&cIl n''y a pas de demande d''alliance de &6{clan}&c.'
+  request_accepted: '&aVous avez accepté l''alliance avec &6{clan}&a.'
+  accepted_auto: '&aL''alliance avec &6{clan} &aa été automatiquement acceptée.'
+  established: '&aVotre clan est désormais allié avec &6{clan}&a.'
+  request_denied: '&eVous avez refusé l''alliance avec &6{clan}&e.'
+  request_denied_notify: '&eLe clan &6{clan} &ea refusé votre demande d''alliance.'
+  removed: '&eVous avez rompu l''alliance avec &6{clan}&e.'
+  removed_notify: '&cL''alliance avec &6{clan} &ca été rompue.'
+  not_allied: '&cVous n''êtes pas allié avec &6{clan}&c.'
+  none: '&7Votre clan n''a aucune alliance.'
+  list: '&7Alliés : &a{allies}'
+admin:
+  help:
+    - '&6&l=== Commandes Admin ==='
+    - '&e/clanadmin help &7- Afficher cette aide'
+    - '&e/clanadmin reload &7- Recharger la configuration et la langue'
+    - '&e/clanadmin setpower <clan> <power> &7- Définir la puissance'
+    - '&e/clanadmin setlevel <clan> <level> &7- Définir le niveau'
+    - '&e/clanadmin disband <clan> &7- Dissoudre le clan'
+    - '&e/clanadmin addmember <clan> <player> &7- Ajouter un membre'
+    - '&e/clanadmin info <clan> &7- Voir les infos détaillées'
+    - '&e/clanadmin forceunclaim &7- Forcer la libération du chunk actuel'
+  reload:
+    success: '&aConfiguration et langue rechargées avec succès.'
+  setpower:
+    usage: '&cUtilisation : /clanadmin setpower <clan> <puissance>'
+    done: '&aPuissance du clan &e{clan}&a définie à &e{power}&a.'
+  setlevel:
+    usage: '&cUtilisation : /clanadmin setlevel <clan> <niveau>'
+    done: '&aNiveau du clan &e{clan}&a défini à &e{level}&a.'
+  disband:
+    usage: '&cUtilisation : /clanadmin disband <clan>'
+    notify_member: '&cVotre clan a été dissous par un administrateur.'
+    done: '&cLe clan &e{clan}&c a été dissous par un administrateur.'
+  addmember:
+    usage: '&cUtilisation : /clanadmin addmember <clan> <joueur>'
+    target_already_in_clan: '&cCe joueur est déjà dans un clan.'
+    clan_full: '&cCe clan est plein.'
+    done: '&aJoueur &e{player}&a ajouté au clan &e{clan}&a.'
+    notify_target: '&aVous avez été ajouté au clan &e{clan}&a par un administrateur.'
+    failed: '&cImpossible d''ajouter ce joueur au clan.'
+  info:
+    usage: '&cUtilisation : /clanadmin info <clan>'
+    header: '&6&l=== Infos Admin du Clan ==='
+    name: '&eNom : &7{name}'
+    tag: '&eTag : &7[{tag}&7]'
+    leader: '&eChef : &7{leader}'
+    power: '&ePuissance : &7{power}&7/&e{max}'
+    level: '&eNiveau : &7{level} &8(&7Exp : {exp}&8)'
+    members: '&eMembres : &7{members}&7/&e{max}'
+    claims: '&eRevendications : &7{claims}&7/&e{max}'
+    desc: '&eDescription : &7{desc}'
+    created: '&eCréé le : &7{created}'
+    open: '&eOuvert : &7{open}'
+    friendlyfire: '&eFeu allié : &7{ff}'
+    members_header: '&eMembres (&7{count}&e) :'
+    member_line: '&8- {role} &7{player} &8(&7{status}&8)'
+    online_offline: '&7En ligne : &a{online} &8| &7Hors ligne : &c{offline}'
+  forceunclaim:
+    none_here: '&cAucun clan ne revendique ce chunk.'
+    done: '&aChunk forcé à être libéré du clan &e{clan}&a.'
+    refund: '&aRemboursé &e{refund}&a de puissance au clan.'
+  must_be_number: '&cCette valeur doit être un nombre.'
+  power_cannot_be_negative: '&cLa puissance ne peut pas être négative.'
+  level_range: '&cLe niveau doit être compris entre &e1 &cet &e100&c.'
+  'yes': '&aOui'
+  'no': '&cNon'
+  enabled: '&aActivé'
+  disabled: '&cDésactivé'
+  online: '&aEn ligne'
+  offline: '&cHors ligne'
+  role_leader: '&6Chef'
+  role_officer: '&aOfficier'
+  role_member: '&7Membre'
+claims:
+  protection:
+    no_break: '&cVous ne pouvez pas casser de blocs sur le territoire d''un autre clan.'
+    no_place: '&cVous ne pouvez pas placer de blocs sur le territoire d''un autre clan.'
+    no_open_container: '&cVous ne pouvez pas ouvrir de conteneurs sur le territoire d''un autre clan.'
+    no_use_door: '&cVous ne pouvez pas utiliser de portes sur le territoire d''un autre clan.'
+    no_use_redstone: '&cVous ne pouvez pas utiliser de leviers/boutons ici.'
+system:
+  command_only_players: '&cCette commande ne peut être utilisée que par des joueurs.'
+  offline_name: Inconnu
+  welcome_back_clan: '&aBon retour ! Votre clan est : &6{clan}&a.'
+command:
+  clan:
+    create:
+      usage: '&cUtilisation : /clan create <nom> <tag>'
+      bad_tag: '&cLe tag doit contenir entre &e2 &cet &e4 &ccaractères.'
+    invite:
+      usage: '&cUtilisation : /clan invite <joueur>'
+    accept:
+      usage: '&cUtilisation : /clan accept <clan>'
+    decline:
+      usage: '&cUtilisation : /clan decline <clan>'
+    kick:
+      usage: '&cUtilisation : /clan kick <joueur>'
+    ally:
+      usage: '&cUtilisation : /clan ally <clan|accept|deny|remove|list> [clan]'
+      accept_usage: '&cUtilisation : /clan ally accept <clan>'
+      deny_usage: '&cUtilisation : /clan ally deny <clan>'
+      remove_usage: '&cUtilisation : /clan ally remove <clan>'
+    help:
+      - '&6=== ClanAscend - Commandes ==='
+      - '&e/clan &7- Ouvrir le menu du clan'
+      - '&e/clan help &7- Afficher cette aide'
+      - '&e/clan create <nom> <tag> &7- Créer un clan'
+      - '&e/clan invite <joueur> &7- Inviter un joueur'
+      - '&e/clan accept <clan> &7- Accepter une invitation'
+      - '&e/clan decline <clan> &7- Refuser une invitation'
+      - '&e/clan kick <joueur> &7- Expulser un membre'
+      - '&e/clan leave &7- Quitter votre clan'
+      - '&e/clan claim &7- Revendiquer le chunk actuel'
+      - '&e/clan unclaim &7- Libérer le chunk actuel'
+      - '&e/clan info &7- Afficher les infos du clan'
+      - '&e/clan list &7- Lister les clans'
+      - '&e/clan chat &7- Activer/désactiver le chat de clan'
+      - '&e/clan top &7- Afficher les meilleurs clans'
+      - '&e/clan ally <clan> &7- Envoyer une demande d''alliance'
+      - '&e/clan allies &7- Afficher vos alliances'
+    info:
+      - '&6=== Infos du Clan : &e{clan} &6==='
+      - '&eTag : &7[{tag}&7]'
+      - '&eChef : &7{leader}'
+      - '&eMembres : &7{members}&7/&e{max_members}'
+      - '&ePuissance : &7{power}&7/&e{max_power}'
+      - '&eRevendications : &7{claims}&7/&e{max_claims}'
+      - '&eDescription : &7{desc}'
+      - '&eCréé le : &7{created}'
+      - '&eStatut : &7{open}'
+    list:
+      header: '&6=== Clans Actifs ==='
+      empty: '&7Aucun clan actif.'
+      line: '&e{n}. &f{clan} &7[{tag}&7] &8- &f{members} membres &8- &a{power} puissance
+        &8- &2{claims} revendic ations'
+      footer: '&7Total : &e{total} clans'
+    setdesc:
+      usage: '&cUtilisation : /clan setdesc <description>'
+    setlimit:
+      usage: '&cUtilisation : /clan setlimit <5-50>'
+update:
+  console: 'Nouvelle version disponible : {latest} (Actuelle : {current})'
+  player: '§6[ClanAscend] §eNouvelle version disponible : §a{latest} §7(Actuelle : §c{current}§7)'

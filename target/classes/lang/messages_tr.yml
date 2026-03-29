@@ -1,0 +1,467 @@
+prefix: '&8[&6ClanAscend&8] &7'
+clan:
+  created: '&a{clan} &aklanı &7[{tag}&7] &aetiketiyle başarıyla oluşturuldu.'
+  created_broadcast: '&6{player} &7, &6{clan} &7[&6{tag}&7] &7klanını oluşturdu!'
+  already_in_clan: '&cZaten bir klanın içindesin.'
+  not_in_clan: '&cBir klanın içinde değilsin.'
+  not_leader: '&cBunu yalnızca klan lideri yapabilir.'
+  no_permission: '&cBunu yapmak için iznin yok.'
+  no_permission_invite: '&cOyuncu davet etmek için iznin yok.'
+  no_permission_kick: '&cÜyeleri atmak için iznin yok.'
+  no_permission_claim: '&cBölge talep etme/bırakma iznin yok.'
+  max_members: '&cKlanın maksimum üye sayısına ulaştı.'
+  target_already_in_clan: '&cBu oyuncu zaten bir klanın içinde.'
+  invite_sent: '&aDavet &e{player}&a gönderildi.'
+  invite_received: '&e{clan} &6klanına katılmaya davet edildin &7({player} tarafından)&e.'
+  disbanded: '&cKlanın dağıtıldı.'
+  cannot_leave_as_leader: '&cKendi klanından ayrılamazsın. &e/clan disband&c kullan.'
+  left: '&aKlandan ayrıldın.'
+  kicked: '&cKlandan atıldın.'
+  player_joined: '&a{player} klana katıldı.'
+  player_left: '&e{player} klandan ayrıldı.'
+  player_kicked: '&c{player} klandan attın.'
+  player_kicked_clan: '&c{player}, {by} tarafından atıldı.'
+  toggled_open: '&aKlan artık {state}&a.'
+  friendly_fire_enabled: '&aDost ateşi: &cAKTİF&a.'
+  friendly_fire_disabled: '&aDost ateşi: &aDEAKTİF&a.'
+  member_demoted: '&eÜye, normal üyeliğe düşürüldü.'
+  member_promoted: '&aÜye, subaylığa yükseltildi.'
+  leadership_transferred: '&6Liderlik başarıyla devredildi.'
+  kick:
+    not_in_your_clan: '&cBu oyuncu senin klanında değil.'
+    cannot_kick_leader: '&cKlan liderini atamazsın.'
+  limit_set: '&aÜye limiti &e{max}&a olarak güncellendi.'
+  description_set: '&aKlan açıklamasını güncelledin.'
+  info:
+    line_members: '&eÜyeler: &7{members}/{max_members}'
+    line_level: '&eSeviye: &7{level} &8(&eXP: {experience}&8)'
+    line_power: '&eGüç: &7{power}/{max_power}'
+    line_description: '&eAçıklama: &7{description}'
+    line_allies: '&eMüttefikler: &7{allies}'
+    header: '&6=== Klan Bilgisi: &e{clan} &6==='
+    line_claims: '&eTalep edilen bölgeler: &7{claims}/{max_claims}'
+  limit_too_low: '&cMinimum üye limiti &e{min}&c.'
+  no_description: '&7Açıklama yok.'
+claim:
+  claimed: '&aBölge başarıyla talep edildi.'
+  unclaimed: '&aBölge başarıyla bırakıldı.'
+  already_claimed: '&cBu bölge zaten talep edilmiş.'
+  not_your_claim: '&cBu bölge senin klanın tarafından talep edilmemiş.'
+  max_claims: '&cKlanın daha fazla bölge talep edemez.'
+  insufficient_power: '&cKlanının talep etmek için yeterli gücü yok.'
+  not_claimed: '&cBu bölge talep edilmemiş.'
+  clan_missing_for_claim: '&cBu talep için klan bulunamadı.'
+  enter: '&a{clan} &e&abölgesine girdin.'
+  exit: '&7{clan} &e&7bölgesinden çıktın.'
+  disabled: "&cBölge sistemi bu sunucuda devre dışı."
+power:
+  gain_title: '&a+{amount} Güç'
+  gain_subtitle: '&7Klanın güç kazandı'
+  loss_title: '&c-{amount} Güç'
+  loss_subtitle: '&7Klanın güç kaybetti'
+  levelup_title: '&6&lSEVİYE {level}!'
+  levelup_subtitle: '&eKlanın seviye atladı'
+  increased: '&a+{amount} güç &7(Toplam: {total})'
+  decreased: '&c-{amount} güç &7(Toplam: {total})'
+  low_power: '&cKlanının yeterli gücü yok.'
+chat:
+  format: '&8[&6Clan&8] &7{player}&8: &f{message}'
+  toggled_on: '&aKlan sohbeti aktifleştirildi.'
+  toggled_off: '&cKlan sohbeti devre dışı bırakıldı.'
+error:
+  no_permission: '&cBunu yapmak için iznin yok.'
+  player_offline: '&cBu oyuncu çevrimiçi değil.'
+  clan_not_found: '&cKlan bulunamadı.'
+  clan_exists: '&cBu isim veya etikete sahip bir klan zaten var.'
+  unknown_command: '&cBilinmeyen komut. &e/clan help&c kullan.'
+  gui_not_available: '&cGUI şu anda mevcut değil.'
+  chat_not_available: '&cKlan sohbeti şu anda mevcut değil.'
+  invalid_number: '&cBu değer bir sayı olmalı.'
+invite:
+  accept_button: '&a&l[KABUL ET]'
+  deny_button: '&c&l[REDDET]'
+  buttons_separator: ' &7| '
+  accept_hover: '&aDaveti kabul etmek için tıkla'
+  deny_hover: '&cDaveti reddetmek için tıkla'
+  type_hint: '&7Ayrıca şunu yazabilirsin: &a/clan accept {clan} &7veya &c/clan decline {clan}'
+  accepted: '&a{clan} &6&aklanına katılma davetini kabul ettin.'
+  denied: '&cDaveti reddettin.'
+  expired: '&cBekleyen davetin yok veya süreleri dolmuş.'
+  not_matching: '&cBu davet bu klan ile eşleşmiyor.'
+gui:
+  prompts:
+    new_description: '&eYeni klan açıklamasını sohbete yaz:'
+    new_maxmembers: '&eYeni üye limitini sohbete yaz (5-50):'
+    cancelled: '&cİşlem iptal edildi.'
+    cancel_hint: '&cİptal etmek için &ccancel &7yaz.'
+    description_updated: '&aKlan açıklaması güncellendi.'
+    maxmembers_updated: '&aÜye limiti &e{max}&a olarak güncellendi.'
+  titles:
+    main: '&8Klan: {clan}'
+    members: '&8Üyeler - {clan}'
+    claims: '&8Bölgeler - {clan}'
+    settings: '&8Ayarlar - {clan}'
+    chest: '&8Klan Sandığı - {clan}'
+  common:
+    back: '&aGeri'
+    close: '&cKapat'
+  main:
+    power_chat: '&eKlan gücü: &a{power}&7/&2{max}'
+    items:
+      info:
+        name: '&6&lKlan Bilgisi &7[{tag}&7]'
+        lore:
+          - '&7Lider: &e{leader}'
+          - '&7Üyeler: &e{members}&7/&e{max_members}'
+          - '&7Güç: &e{power}&7/&e{max_power}'
+          - '&7Bölgeler: &e{claims}&7/&e{max_claims}'
+          - ''
+          - '&7Rolün: {role}'
+          - '&7Açıklama:'
+          - '&f{desc}'
+      members:
+        name: '&a&lÜyeler'
+        lore:
+          - '&7Üye listesini aç.'
+          - '&7Toplam: &e{total}'
+          - '&7Çevrimiçi: &a{online}'
+          - ''
+          - '&eAçmak için tıkla'
+      claims:
+        name: '&2&lBölge'
+        lore:
+          - '&7Bölgeleri yönet.'
+          - '&7Bölgeler: &e{claims}&7/&e{max}'
+          - ''
+          - '&eAçmak için tıkla'
+      power:
+        name: '&e&lKlan Gücü'
+        lore:
+          - '&7Güç: &e{power}&7/&e{max}'
+          - ''
+          - '&7Öldürmeler ve etkinliklerle güç kazan.'
+      chest:
+        name: '&6&lKlan Sandığı'
+        lore:
+          - '&7Klanın için ortak depolama.'
+          - ''
+          - '&eAçmak için tıkla'
+      settings:
+        name: '&d&lAyarlar'
+        lore:
+          - '&7Klan seçenekleri.'
+          - ''
+          - '&eAçmak için tıkla'
+      chat:
+        name: '&b&lKlan Sohbeti'
+        lore:
+          - '&7Klan sohbetini aç/kapat.'
+          - ''
+          - '&eAçıp kapatmak için tıkla'
+      top:
+        name: '&e&lEn İyi Klanlar'
+        lore:
+          - '&7Sıralamayı sohbette göster.'
+          - ''
+          - '&eGöstermek için tıkla'
+      disband:
+        name: '&4&lKlanı Dağıt'
+        lore:
+          - '&cKlanı kalıcı olarak dağıtır.'
+          - '&cBu işlem geri alınamaz.'
+          - ''
+          - '&eDevam etmek için tıkla'
+  members:
+    member_name: '&e{player}'
+    member_lore:
+      - '&7Rol: {role}'
+      - '&7Durum: {status}'
+      - ''
+      - '{extra}'
+    roles:
+      leader: '&6&lLİDER'
+      officer: '&a&lSUBAY'
+      member: '&7Üye'
+    status:
+      online: '&aÇevrimiçi'
+      offline: '&cÇevrimdışı'
+    extra:
+      leader_hint: '&eYönetmek için tıkla'
+      no_perm: '&7İzin yok'
+  claims:
+    info:
+      name: '&eBölge Bilgisi'
+      lore:
+        - '&7Bölgeler: &e{claims}&7/&e{max}'
+        - '&7Güç: &e{power}&7/&e{max_power}'
+        - '&7Bölge talep maliyeti: &e{cost}'
+        - '&7Bırakma iadesi: &e{refund}'
+    claim_button:
+      name: '&a&lGeçerli bölgeyi talep et'
+      lore:
+        - '&7Maliyet: &e{cost} güç'
+        - '&eTalep etmek için tıkla'
+    unclaim_button:
+      name: '&c&lGeçerli bölgeyi bırak'
+      lore:
+        - '&7İade: &e{refund} güç'
+        - '&eBırakmak için tıkla'
+    claimed_item:
+      name: '&aTalep edilen bölge'
+      lore:
+        - '&7Klanın tarafından talep edilen bir bölge'
+  settings:
+    chat_edit_description: '&eYeni klan açıklamasını sohbete yaz:'
+    chat_edit_max_members: '&eYeni üye limitini sohbete yaz:'
+    description:
+      name: '&eKlan Açıklaması'
+      lore:
+        - '&7Mevcut: &f{desc}'
+    open:
+      name_open: '&eKlan &aAçık'
+      name_closed: '&eKlan &cKapalı'
+      lore:
+        - '&7Durum: {status}'
+        - ''
+        - '&eDeğiştirmek için tıkla'
+      status_open: '&aAÇIK'
+      status_closed: '&cKAPALI'
+    friendlyfire:
+      name_on: '&eDost ateşi: &cAktif'
+      name_off: '&eDost ateşi: &aPasif'
+      lore:
+        - '&7Üyeler arası hasar: {state}'
+        - ''
+        - '&eDeğiştirmek için tıkla'
+      state_on: '&cEVET'
+      state_off: '&aHAYIR'
+    maxmembers:
+      name: '&eÜye Limiti'
+      lore:
+        - '&7Mevcut: &e{max}'
+        - '&7Aralık: &e5-50'
+  confirm_disband:
+    title: '&8Dağıtmayı onayla'
+    info:
+      name: '&4&lEmin misin?'
+      lore:
+        - '&cBu, klanı kalıcı olarak dağıtacak.'
+        - '&cBu işlem geri alınamaz.'
+    accept:
+      name: '&a&lONAYLA'
+      lore:
+        - '&7Klanı şimdi dağıt.'
+    cancel:
+      name: '&c&lİPTAL'
+      lore:
+        - '&7Geri dön.'
+  members-title: '&8Üyeler - {clan}'
+  main-title: '&8Klan: {clan}'
+  settings-title: '&8Ayarlar - {clan}'
+  claims-title: '&8Bölgeler - {clan}'
+  manage_member:
+    title: '&8Yönet: &e{player}'
+    info:
+      banned_yes: '&cEvet'
+      banned_no: '&aHayır'
+    player:
+      name: '&e{player}'
+      lore:
+        - '&7Rol: &f{role}'
+        - '&7Durum: &f{online}'
+        - '&7UUID: &f{uuid}'
+        - '&7Yasaklı: &f{banned}'
+    promote:
+      name: '&aSubaylığa Yükselt'
+      lore:
+        - '&7Bu üyeyi subay yapar.'
+        - '&eYükseltmek için tıkla'
+    demote:
+      name: '&eÜyeliğe Düşür'
+      lore:
+        - '&7Subay rütbesini kaldırır.'
+        - '&eDüşürmek için tıkla'
+    transfer:
+      name: '&6Liderliği Devret'
+      lore:
+        - '&7Bu oyuncuyu klan lideri yapar.'
+        - '&cBu işlem geri alınamaz.'
+        - '&eDevretmek için tıkla'
+    kick:
+      name: '&cKlandan At'
+      lore:
+        - '&7Oyuncuyu çevrimdışı olsa bile atar.'
+        - '&eAtmak için tıkla'
+    ban:
+      name: '&4Klandan Yasakla'
+      lore:
+        - '&7Atar ve tekrar katılmasını engeller.'
+        - '&cAnında işlem.'
+        - '&eYasaklamak için tıkla'
+    disabled:
+      name: '&e&lMevcut değil'
+      lore:
+        - '&7Bu seçenek şu anda kullanılamıyor.'
+        - '&7Sebep: &f{reason}'
+      reason_self: '&cKendini yönetemezsin.'
+      reason_leader: '&cKlan liderini yönetemezsin.'
+      reason_no_perm: '&cYeterli iznin yok.'
+top:
+  header: '&6&lGüce Göre En İyi 10 Klan'
+  empty: '&7Gösterilecek klan yok.'
+  line: '{color}#{rank} &8- &e{name} &7[{tag}&7] &8| &fGüç: &a{power} &8| &fÜyeler:
+    &e{members}'
+  footer: '&7----------------------------------------'
+alliance:
+  cannot_ally_self: '&cKendinle ittifak yapamazsın.'
+  already_allied: '&eZaten &6{clan} &eile ittifak halindesin.'
+  limit_reached: '&cKlanın zaten maksimum ittifak sayısına ulaştı: &6{limit}&c.'
+  target_limit_reached: '&c{clan} &6klanı zaten maksimum ittifak sayısına ulaştı: &6{limit}&c.'
+  request_already_sent: '&eZaten &6{clan} &eittifak isteği gönderdin.'
+  request_sent: '&a{clan} &6&aittifak isteği gönderdin.'
+  request_received: '&a{clan} &6klanı klanına bir ittifak isteği gönderdi. &7({player} tarafından gönderildi)'
+  clickable_prompt: '&e{clan} &6&eittifak isteğine cevap vermek için bu komutları kullan.'
+  no_request_from: '&c{clan} &6&cittifak isteği yok.'
+  request_accepted: '&a{clan} &6&aile ittifakı kabul ettin.'
+  accepted_auto: '&a{clan} &6&aile ittifak otomatik olarak kabul edildi.'
+  established: '&aKlanın artık &6{clan} &aile ittifak halinde.'
+  request_denied: '&e{clan} &6&eile ittifakı reddettin.'
+  request_denied_notify: '&e{clan} &6klanı ittifak isteğini reddetti.'
+  removed: '&e{clan} &6&eile ittifakı bozdun.'
+  removed_notify: '&c{clan} &6&cile ittifak bozuldu.'
+  not_allied: '&c{clan} &6&cile ittifak halinde değilsin.'
+  none: '&7Klanının hiç ittifakı yok.'
+  list: '&7Müttefikler: &a{allies}'
+admin:
+  help:
+    - '&6&l=== Admin Komutları ==='
+    - '&e/clanadmin help &7- Bu yardımı göster'
+    - '&e/clanadmin reload &7- Konfigürasyon ve dili yeniden yükle'
+    - '&e/clanadmin setpower <clan> <power> &7- Güç ayarla'
+    - '&e/clanadmin setlevel <clan> <level> &7- Seviye ayarla'
+    - '&e/clanadmin disband <clan> &7- Klanı dağıt'
+    - '&e/clanadmin addmember <clan> <player> &7- Üye ekle'
+    - '&e/clanadmin info <clan> &7- Detaylı bilgi göster'
+    - '&e/clanadmin forceunclaim &7- Geçerli bölgeyi zorla bırak'
+  reload:
+    success: '&aKonfigürasyon ve dil başarıyla yeniden yüklendi.'
+  setpower:
+    usage: '&cKullanım: /clanadmin setpower <klan> <güç>'
+    done: '&a{clan} &e&aklanının gücü &e{power}&a olarak ayarlandı.'
+  setlevel:
+    usage: '&cKullanım: /clanadmin setlevel <klan> <seviye>'
+    done: '&a{clan} &e&aklanının seviyesi &e{level}&a olarak ayarlandı.'
+  disband:
+    usage: '&cKullanım: /clanadmin disband <klan>'
+    notify_member: '&cKlanın bir yönetici tarafından dağıtıldı.'
+    done: '&c{clan} &e&cklanı bir yönetici tarafından dağıtıldı.'
+  addmember:
+    usage: '&cKullanım: /clanadmin addmember <klan> <oyuncu>'
+    target_already_in_clan: '&cBu oyuncu zaten bir klanın içinde.'
+    clan_full: '&cBu klan dolu.'
+    done: '&aOyuncu &e{player}&a, &e{clan}&a klanına eklendi.'
+    notify_target: '&aBir yönetici tarafından &e{clan}&a klanına eklendin.'
+    failed: '&cBu oyuncu klana eklenemedi.'
+  info:
+    usage: '&cKullanım: /clanadmin info <klan>'
+    header: '&6&l=== Klan Admin Bilgisi ==='
+    name: '&eİsim: &7{name}'
+    tag: '&eEtiket: &7[{tag}&7]'
+    leader: '&eLider: &7{leader}'
+    power: '&eGüç: &7{power}&7/&e{max}'
+    level: '&eSeviye: &7{level} &8(&7XP: {exp}&8)'
+    members: '&eÜyeler: &7{members}&7/&e{max}'
+    claims: '&eBölgeler: &7{claims}&7/&e{max}'
+    desc: '&eAçıklama: &7{desc}'
+    created: '&eOluşturulma: &7{created}'
+    open: '&eAçık: &7{open}'
+    friendlyfire: '&eDost ateşi: &7{ff}'
+    members_header: '&eÜyeler (&7{count}&e):'
+    member_line: '&8- {role} &7{player} &8(&7{status}&8)'
+    online_offline: '&7Çevrimiçi: &a{online} &8| &7Çevrimdışı: &c{offline}'
+  forceunclaim:
+    none_here: '&cBu bölgeyi talep eden bir klan yok.'
+    done: '&aBölge, &e{clan}&a klanından zorla bırakıldı.'
+    refund: '&aKlana &e{refund}&a güç iade edildi.'
+  must_be_number: '&cBu değer bir sayı olmalı.'
+  power_cannot_be_negative: '&cGüç negatif olamaz.'
+  level_range: '&cSeviye &e1 &cile &e100 &carasında olmalı.'
+  'yes': '&aEvet'
+  'no': '&cHayır'
+  enabled: '&aAktif'
+  disabled: '&cPasif'
+  online: '&aÇevrimiçi'
+  offline: '&cÇevrimdışı'
+  role_leader: '&6Lider'
+  role_officer: '&aSubay'
+  role_member: '&7Üye'
+claims:
+  protection:
+    no_break: '&cBaşka bir klanın bölgesinde blok kıramazsın.'
+    no_place: '&cBaşka bir klanın bölgesinde blok yerleştiremezsin.'
+    no_open_container: '&cBaşka bir klanın bölgesinde kapları açamazsın.'
+    no_use_door: '&cBaşka bir klanın bölgesinde kapıları kullanamazsın.'
+    no_use_redstone: '&cBurada kollar/butonlar kullanamazsın.'
+system:
+  command_only_players: '&cBu komut yalnızca oyuncular tarafından kullanılabilir.'
+  offline_name: Bilinmiyor
+  welcome_back_clan: '&aTekrar hoş geldin! Klanın: &6{clan}&a.'
+command:
+  clan:
+    create:
+      usage: '&cKullanım: /clan create <isim> <etiket>'
+      bad_tag: '&cEtiket &e2 &cile &e4 &ckarakter arasında olmalı.'
+    invite:
+      usage: '&cKullanım: /clan invite <oyuncu>'
+    accept:
+      usage: '&cKullanım: /clan accept <klan>'
+    decline:
+      usage: '&cKullanım: /clan decline <klan>'
+    kick:
+      usage: '&cKullanım: /clan kick <oyuncu>'
+    ally:
+      usage: '&cKullanım: /clan ally <klan|accept|deny|remove|list> [klan]'
+      accept_usage: '&cKullanım: /clan ally accept <klan>'
+      deny_usage: '&cKullanım: /clan ally deny <klan>'
+      remove_usage: '&cKullanım: /clan ally remove <klan>'
+    help:
+      - '&6=== ClanAscend - Komutlar ==='
+      - '&e/clan &7- Klan menüsünü aç'
+      - '&e/clan help &7- Bu yardımı göster'
+      - '&e/clan create <isim> <etiket> &7- Klan oluştur'
+      - '&e/clan invite <oyuncu> &7- Oyuncu davet et'
+      - '&e/clan accept <klan> &7- Daveti kabul et'
+      - '&e/clan decline <klan> &7- Daveti reddet'
+      - '&e/clan kick <oyuncu> &7- Üye at'
+      - '&e/clan leave &7- Klanından ayrıl'
+      - '&e/clan claim &7- Geçerli bölgeyi talep et'
+      - '&e/clan unclaim &7- Geçerli bölgeyi bırak'
+      - '&e/clan info &7- Klan bilgisini göster'
+      - '&e/clan list &7- Klanları listele'
+      - '&e/clan chat &7- Klan sohbetini aç/kapat'
+      - '&e/clan top &7- En iyi klanları göster'
+      - '&e/clan ally <klan> &7- İttifak isteği gönder'
+      - '&e/clan allies &7- İttifaklarını göster'
+    info:
+      - '&6=== Klan Bilgisi: &e{clan} &6==='
+      - '&eEtiket: &7[{tag}&7]'
+      - '&eLider: &7{leader}'
+      - '&eÜyeler: &7{members}&7/&e{max_members}'
+      - '&eGüç: &7{power}&7/&e{max_power}'
+      - '&eBölgeler: &7{claims}&7/&e{max_claims}'
+      - '&eAçıklama: &7{desc}'
+      - '&eOluşturulma: &7{created}'
+      - '&eDurum: &7{open}'
+    list:
+      header: '&6=== Aktif Klanlar ==='
+      empty: '&7Gösterilecek aktif klan yok.'
+      line: '&e{n}. &f{clan} &7[{tag}&7] &8- &f{members} üye &8- &a{power} güç
+        &8- &2{claims} bölge'
+      footer: '&7Toplam: &e{total} klan'
+    setdesc:
+      usage: '&cKullanım: /clan setdesc <açıklama>'
+    setlimit:
+      usage: '&cKullanım: /clan setlimit <5-50>'
+update:
+  console: 'Yeni sürüm mevcut: {latest} (Mevcut: {current})'
+  player: '§6[ClanAscend] §eYeni sürüm mevcut: §a{latest} §7(Mevcut: §c{current}§7)'

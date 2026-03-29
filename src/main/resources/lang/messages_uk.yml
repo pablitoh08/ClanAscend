@@ -1,0 +1,467 @@
+prefix: '&8[&6ClanAscend&8] &7'
+clan:
+  created: '&aКлан &6{clan} &aуспішно створено з тегом &7[{tag}&7]&a.'
+  created_broadcast: '&6{player} &7створив клан &6{clan} &7[&6{tag}&7]&7!'
+  already_in_clan: '&cВи вже в клані.'
+  not_in_clan: '&cВи не в клані.'
+  not_leader: '&cТільки лідер клану може це зробити.'
+  no_permission: '&cУ вас немає прав на це.'
+  no_permission_invite: '&cУ вас немає прав запрошувати гравців.'
+  no_permission_kick: '&cУ вас немає прав виганяти учасників.'
+  no_permission_claim: '&cУ вас немає прав займати/звільняти територію.'
+  max_members: '&cВаш клан досяг максимальної кількості учасників.'
+  target_already_in_clan: '&cЦей гравець вже в клані.'
+  invite_sent: '&aЗапрошення надіслано &e{player}&a.'
+  invite_received: '&eВас запросили приєднатися до &6{clan} &7(від &f{player}&7)&e.'
+  disbanded: '&cВаш клан було розформовано.'
+  cannot_leave_as_leader: '&cВи не можете покинути свій власний клан. Використайте &e/clan disband&c.'
+  left: '&aВи покинули клан.'
+  kicked: '&cВас вигнали з клану.'
+  player_joined: '&a{player} приєднався до клану.'
+  player_left: '&e{player} покинув клан.'
+  player_kicked: '&cВи вигнали {player} з клану.'
+  player_kicked_clan: '&c{player} був вигнаний {by}.'
+  toggled_open: '&aКлан тепер {state}&a.'
+  friendly_fire_enabled: '&aСвій-свій: &cУВІМКНЕНО&a.'
+  friendly_fire_disabled: '&aСвій-свій: &aВИМКНЕНО&a.'
+  member_demoted: '&eУчасника понижено до звичайного учасника.'
+  member_promoted: '&aУчасника підвищено до офіцера.'
+  leadership_transferred: '&6Лідерство успішно передано.'
+  kick:
+    not_in_your_clan: '&cЦей гравець не у вашому клані.'
+    cannot_kick_leader: '&cВи не можете вигнати лідера клану.'
+  limit_set: '&aЛіміт учасників оновлено до &e{max}&a.'
+  description_set: '&aВи оновили опис клану.'
+  info:
+    line_members: '&eУчасники: &7{members}/{max_members}'
+    line_level: '&eРівень: &7{level} &8(&eДОСВІД: {experience}&8)'
+    line_power: '&eСила: &7{power}/{max_power}'
+    line_description: '&eОпис: &7{description}'
+    line_allies: '&eСоюзники: &7{allies}'
+    header: '&6=== Інформація про клан: &e{clan} &6==='
+    line_claims: '&eТериторії: &7{claims}/{max_claims}'
+  limit_too_low: '&cМінімальний ліміт учасників: &e{min}&c.'
+  no_description: '&7Немає опису.'
+claim:
+  claimed: '&aЧанк успішно зайнято.'
+  unclaimed: '&aЧанк успішно звільнено.'
+  already_claimed: '&cЦей чанк вже зайнято.'
+  not_your_claim: '&cЦей чанк не зайнято вашим кланом.'
+  max_claims: '&cВаш клан не може зайняти більше чанків.'
+  insufficient_power: '&cУ вашого клану недостатньо сили для захоплення.'
+  not_claimed: '&cЦей чанк не зайнято.'
+  clan_missing_for_claim: '&cНе вдалося знайти клан для цієї території.'
+  enter: '&aВи увійшли на територію &e{clan}&a.'
+  exit: '&7Ви покинули територію &e{clan}&7.'
+  disabled: "&cСистема територій вимкнена на цьому сервері."
+power:
+  gain_title: '&a+{amount} Сили'
+  gain_subtitle: '&7Ваш клан отримав силу'
+  loss_title: '&c-{amount} Сили'
+  loss_subtitle: '&7Ваш клан втратив силу'
+  levelup_title: '&6&lРІВЕНЬ {level}!'
+  levelup_subtitle: '&eВаш клан підвищив рівень'
+  increased: '&a+{amount} сили &7(Всього: {total})'
+  decreased: '&c-{amount} сили &7(Всього: {total})'
+  low_power: '&cУ вашого клану недостатньо сили.'
+chat:
+  format: '&8[&6Clan&8] &7{player}&8: &f{message}'
+  toggled_on: '&aЧат клану увімкнено.'
+  toggled_off: '&cЧат клану вимкнено.'
+error:
+  no_permission: '&cУ вас немає прав на це.'
+  player_offline: '&cЦей гравець не в мережі.'
+  clan_not_found: '&cКлан не знайдено.'
+  clan_exists: '&cКлан з таким іменем або тегом вже існує.'
+  unknown_command: '&cНевідома команда. Використайте &e/clan help&c.'
+  gui_not_available: '&cГрафічний інтерфейс зараз недоступний.'
+  chat_not_available: '&cЧат клану зараз недоступний.'
+  invalid_number: '&cЦе значення має бути числом.'
+invite:
+  accept_button: '&a&l[ПРИЙНЯТИ]'
+  deny_button: '&c&l[ВІДХИЛИТИ]'
+  buttons_separator: ' &7| '
+  accept_hover: '&aНатисніть, щоб прийняти запрошення'
+  deny_hover: '&cНатисніть, щоб відхилити запрошення'
+  type_hint: '&7Ви також можете ввести: &a/clan accept {clan} &7або &c/clan decline {clan}'
+  accepted: '&aВи прийняли запрошення приєднатися до &6{clan}&a.'
+  denied: '&cВи відхилили запрошення.'
+  expired: '&cУ вас немає активних запрошень, або вони закінчилися.'
+  not_matching: '&cЦе запрошення не відповідає цьому клану.'
+gui:
+  prompts:
+    new_description: '&eВведіть новий опис клану в чат:'
+    new_maxmembers: '&eВведіть новий ліміт учасників в чат (5-50):'
+    cancelled: '&cДію скасовано.'
+    cancel_hint: '&7Введіть &c cancel &7для скасування.'
+    description_updated: '&aОпис клану оновлено.'
+    maxmembers_updated: '&aЛіміт учасників оновлено до &e{max}&a.'
+  titles:
+    main: '&8Клан: {clan}'
+    members: '&8Учасники - {clan}'
+    claims: '&8Території - {clan}'
+    settings: '&8Налаштування - {clan}'
+    chest: '&8Скриня Клану - {clan}'
+  common:
+    back: '&aНазад'
+    close: '&cЗакрити'
+  main:
+    power_chat: '&eСила клану: &a{power}&7/&2{max}'
+    items:
+      info:
+        name: '&6&lІнформація про клан &7[{tag}&7]'
+        lore:
+          - '&7Лідер: &e{leader}'
+          - '&7Учасники: &e{members}&7/&e{max_members}'
+          - '&7Сила: &e{power}&7/&e{max_power}'
+          - '&7Території: &e{claims}&7/&e{max_claims}'
+          - ''
+          - '&7Ваша роль: {role}'
+          - '&7Опис:'
+          - '&f{desc}'
+      members:
+        name: '&a&lУчасники'
+        lore:
+          - '&7Відкрити список учасників.'
+          - '&7Всього: &e{total}'
+          - '&7Онлайн: &a{online}'
+          - ''
+          - '&eНатисніть, щоб відкрити'
+      claims:
+        name: '&2&lТериторія'
+        lore:
+          - '&7Керувати територіями.'
+          - '&7Території: &e{claims}&7/&e{max}'
+          - ''
+          - '&eНатисніть, щоб відкрити'
+      power:
+        name: '&e&lСила Клану'
+        lore:
+          - '&7Сила: &e{power}&7/&e{max}'
+          - ''
+          - '&7Отримуйте силу через вбивства та події.'
+      chest:
+        name: '&6&lСкриня Клану'
+        lore:
+          - '&7Спільне сховище для вашого клану.'
+          - ''
+          - '&eНатисніть, щоб відкрити'
+      settings:
+        name: '&d&lНалаштування'
+        lore:
+          - '&7Опції клану.'
+          - ''
+          - '&eНатисніть, щоб відкрити'
+      chat:
+        name: '&b&lЧат Клану'
+        lore:
+          - '&7Увімкнути/вимкнути чат клану.'
+          - ''
+          - '&eНатисніть, щоб увімкнути/вимкнути'
+      top:
+        name: '&e&lКращі Клани'
+        lore:
+          - '&7Показати рейтинг у чаті.'
+          - ''
+          - '&eНатисніть, щоб показати'
+      disband:
+        name: '&4&lРозформувати Клан'
+        lore:
+          - '&cРозформовує клан назавжди.'
+          - '&cЦю дію не можна скасувати.'
+          - ''
+          - '&eНатисніть, щоб продовжити'
+  members:
+    member_name: '&e{player}'
+    member_lore:
+      - '&7Роль: {role}'
+      - '&7Статус: {status}'
+      - ''
+      - '{extra}'
+    roles:
+      leader: '&6&lЛІДЕР'
+      officer: '&a&lОФІЦЕР'
+      member: '&7Учасник'
+    status:
+      online: '&aОнлайн'
+      offline: '&cОфлайн'
+    extra:
+      leader_hint: '&eНатисніть для керування'
+      no_perm: '&7Немає прав'
+  claims:
+    info:
+      name: '&eІнформація про території'
+      lore:
+        - '&7Території: &e{claims}&7/&e{max}'
+        - '&7Сила: &e{power}&7/&e{max_power}'
+        - '&7Вартість захоплення: &e{cost}'
+        - '&7Повернення при звільненні: &e{refund}'
+    claim_button:
+      name: '&a&lЗахопити поточний чанк'
+      lore:
+        - '&7Вартість: &e{cost} сили'
+        - '&eНатисніть, щоб захопити'
+    unclaim_button:
+      name: '&c&lЗвільнити поточний чанк'
+      lore:
+        - '&7Повернення: &e{refund} сили'
+        - '&eНатисніть, щоб звільнити'
+    claimed_item:
+      name: '&aЗахоплена територія'
+      lore:
+        - '&7Чанк, захоплений вашим кланом'
+  settings:
+    chat_edit_description: '&eВведіть новий опис клану в чат:'
+    chat_edit_max_members: '&eВведіть новий ліміт учасників в чат:'
+    description:
+      name: '&eОпис Клану'
+      lore:
+        - '&7Поточний: &f{desc}'
+    open:
+      name_open: '&eКлан &aВідкритий'
+      name_closed: '&eКлан &cЗакритий'
+      lore:
+        - '&7Статус: {status}'
+        - ''
+        - '&eНатисніть, щоб змінити'
+      status_open: '&aВІДКРИТИЙ'
+      status_closed: '&cЗАКРИТИЙ'
+    friendlyfire:
+      name_on: '&eСвій-свій: &cУвімкнено'
+      name_off: '&eСвій-свій: &aВимкнено'
+      lore:
+        - '&7Шкода між учасниками: {state}'
+        - ''
+        - '&eНатисніть, щоб змінити'
+      state_on: '&cТАК'
+      state_off: '&aНІ'
+    maxmembers:
+      name: '&eЛіміт Учасників'
+      lore:
+        - '&7Поточний: &e{max}'
+        - '&7Діапазон: &e5-50'
+  confirm_disband:
+    title: '&8Підтвердження розформування'
+    info:
+      name: '&4&lВи впевнені?'
+      lore:
+        - '&cЦе розформує клан назавжди.'
+        - '&cЦю дію не можна скасувати.'
+    accept:
+      name: '&a&lПІДТВЕРДИТИ'
+      lore:
+        - '&7Розформувати клан зараз.'
+    cancel:
+      name: '&c&lСКАСУВАТИ'
+      lore:
+        - '&7Назад.'
+  members-title: '&8Учасники - {clan}'
+  main-title: '&8Клан: {clan}'
+  settings-title: '&8Налаштування - {clan}'
+  claims-title: '&8Території - {clan}'
+  manage_member:
+    title: '&8Керування: &e{player}'
+    info:
+      banned_yes: '&cТак'
+      banned_no: '&aНі'
+    player:
+      name: '&e{player}'
+      lore:
+        - '&7Роль: &f{role}'
+        - '&7Статус: &f{online}'
+        - '&7UUID: &f{uuid}'
+        - '&7Забанений: &f{banned}'
+    promote:
+      name: '&aПідвищити до Офіцера'
+      lore:
+        - '&7Робить цього учасника офіцером.'
+        - '&eНатисніть для підвищення'
+    demote:
+      name: '&eПонизити до Учасника'
+      lore:
+        - '&7Знімає звання офіцера.'
+        - '&eНатисніть для пониження'
+    transfer:
+      name: '&6Передати Лідерство'
+      lore:
+        - '&7Робить цього гравця лідером клану.'
+        - '&cЦю дію не можна скасувати.'
+        - '&eНатисніть для передачі'
+    kick:
+      name: '&cВигнати з Клану'
+      lore:
+        - '&7Виганяє гравця, навіть якщо він офлайн.'
+        - '&eНатисніть для вигнання'
+    ban:
+      name: '&4Забанити в Клані'
+      lore:
+        - '&7Виганяє та блокує повторне приєднання.'
+        - '&cНегайна дія.'
+        - '&eНатисніть для бану'
+    disabled:
+      name: '&e&lНедоступно'
+      lore:
+        - '&7Цю опцію зараз не можна використовувати.'
+        - '&7Причина: &f{reason}'
+      reason_self: '&cВи не можете керувати собою.'
+      reason_leader: '&cВи не можете керувати лідером клану.'
+      reason_no_perm: '&cУ вас недостатньо прав.'
+top:
+  header: '&6&lТоп 10 Кланів за Силою'
+  empty: '&7Немає кланів для відображення.'
+  line: '{color}#{rank} &8- &e{name} &7[{tag}&7] &8| &fСила: &a{power} &8| &fУчасники:
+    &e{members}'
+  footer: '&7----------------------------------------'
+alliance:
+  cannot_ally_self: '&cВи не можете укласти союз із самим собою.'
+  already_allied: '&eВи вже в союзі з &6{clan}&e.'
+  limit_reached: '&cВаш клан вже досяг максимальної кількості союзників: &6{limit}&c.'
+  target_limit_reached: '&cКлан &6{clan} &cвже досяг максимальної кількості союзників: &6{limit}&c.'
+  request_already_sent: '&eВи вже надіслали запит на союз до &6{clan}&e.'
+  request_sent: '&aВи надіслали запит на союз до &6{clan}&a.'
+  request_received: '&aКлан &6{clan} &aнадіслав вашому клану запит на союз. &7(Надіслав {player})'
+  clickable_prompt: '&eВикористайте ці команди, щоб відповісти на запит союзу від &6{clan}&e.'
+  no_request_from: '&cНемає запиту на союз від &6{clan}&c.'
+  request_accepted: '&aВи прийняли союз з &6{clan}&a.'
+  accepted_auto: '&aСоюз з &6{clan} &aбув автоматично прийнятий.'
+  established: '&aВаш клан тепер у союзі з &6{clan}&a.'
+  request_denied: '&eВи відхилили союз з &6{clan}&e.'
+  request_denied_notify: '&eКлан &6{clan} &eвідхилив ваш запит на союз.'
+  removed: '&eВи розірвали союз з &6{clan}&e.'
+  removed_notify: '&cСоюз з &6{clan} &cбуло розірвано.'
+  not_allied: '&cВи не в союзі з &6{clan}&c.'
+  none: '&7У вашого клану немає союзників.'
+  list: '&7Союзники: &a{allies}'
+admin:
+  help:
+    - '&6&l=== Команди Адміністратора ==='
+    - '&e/clanadmin help &7- Показати цю довідку'
+    - '&e/clanadmin reload &7- Перезавантажити конфігурацію та мову'
+    - '&e/clanadmin setpower <clan> <power> &7- Встановити силу'
+    - '&e/clanadmin setlevel <clan> <level> &7- Встановити рівень'
+    - '&e/clanadmin disband <clan> &7- Розформувати клан'
+    - '&e/clanadmin addmember <clan> <player> &7- Додати учасника'
+    - '&e/clanadmin info <clan> &7- Показати детальну інформацію'
+    - '&e/clanadmin forceunclaim &7- Примусово звільнити поточний чанк'
+  reload:
+    success: '&aКонфігурацію та мову успішно перезавантажено.'
+  setpower:
+    usage: '&cВикористання: /clanadmin setpower <клан> <сила>'
+    done: '&aСилу клану &e{clan}&a встановлено на &e{power}&a.'
+  setlevel:
+    usage: '&cВикористання: /clanadmin setlevel <клан> <рівень>'
+    done: '&aРівень клану &e{clan}&a встановлено на &e{level}&a.'
+  disband:
+    usage: '&cВикористання: /clanadmin disband <клан>'
+    notify_member: '&cВаш клан було розформовано адміністратором.'
+    done: '&cКлан &e{clan}&c було розформовано адміністратором.'
+  addmember:
+    usage: '&cВикористання: /clanadmin addmember <клан> <гравець>'
+    target_already_in_clan: '&cЦей гравець вже в клані.'
+    clan_full: '&cЦей клан заповнений.'
+    done: '&aГравця &e{player}&a додано до клану &e{clan}&a.'
+    notify_target: '&aВас додано до клану &e{clan}&a адміністратором.'
+    failed: '&cНе вдалося додати гравця до клану.'
+  info:
+    usage: '&cВикористання: /clanadmin info <клан>'
+    header: '&6&l=== Адмін-інформація про клан ==='
+    name: '&eНазва: &7{name}'
+    tag: '&eТег: &7[{tag}&7]'
+    leader: '&eЛідер: &7{leader}'
+    power: '&eСила: &7{power}&7/&e{max}'
+    level: '&eРівень: &7{level} &8(&7Досвід: {exp}&8)'
+    members: '&eУчасники: &7{members}&7/&e{max}'
+    claims: '&eТериторії: &7{claims}&7/&e{max}'
+    desc: '&eОпис: &7{desc}'
+    created: '&eСтворений: &7{created}'
+    open: '&eВідкритий: &7{open}'
+    friendlyfire: '&eСвій-свій: &7{ff}'
+    members_header: '&eУчасники (&7{count}&e):'
+    member_line: '&8- {role} &7{player} &8(&7{status}&8)'
+    online_offline: '&7Онлайн: &a{online} &8| &7Офлайн: &c{offline}'
+  forceunclaim:
+    none_here: '&cЖоден клан не займає цей чанк.'
+    done: '&aЧанк примусово звільнено від клану &e{clan}&a.'
+    refund: '&aПовернуто &e{refund}&a сили клану.'
+  must_be_number: '&cЦе значення має бути числом.'
+  power_cannot_be_negative: '&cСила не може бути відʼємною.'
+  level_range: '&cРівень має бути між &e1 &cта &e100&c.'
+  'yes': '&aТак'
+  'no': '&cНі'
+  enabled: '&aУвімкнено'
+  disabled: '&cВимкнено'
+  online: '&aОнлайн'
+  offline: '&cОфлайн'
+  role_leader: '&6Лідер'
+  role_officer: '&aОфіцер'
+  role_member: '&7Учасник'
+claims:
+  protection:
+    no_break: '&cВи не можете руйнувати блоки на території іншого клану.'
+    no_place: '&cВи не можете розміщувати блоки на території іншого клану.'
+    no_open_container: '&cВи не можете відкривати контейнери на території іншого клану.'
+    no_use_door: '&cВи не можете використовувати двері на території іншого клану.'
+    no_use_redstone: '&cВи не можете використовувати важелі/кнопки тут.'
+system:
+  command_only_players: '&cЦю команду можуть використовувати лише гравці.'
+  offline_name: Невідомо
+  welcome_back_clan: '&aЛаскаво просимо назад! Ваш клан: &6{clan}&a.'
+command:
+  clan:
+    create:
+      usage: '&cВикористання: /clan create <назва> <тег>'
+      bad_tag: '&cТег має містити від &e2 &cдо &e4 &cсимволів.'
+    invite:
+      usage: '&cВикористання: /clan invite <гравець>'
+    accept:
+      usage: '&cВикористання: /clan accept <клан>'
+    decline:
+      usage: '&cВикористання: /clan decline <клан>'
+    kick:
+      usage: '&cВикористання: /clan kick <гравець>'
+    ally:
+      usage: '&cВикористання: /clan ally <клан|accept|deny|remove|list> [клан]'
+      accept_usage: '&cВикористання: /clan ally accept <клан>'
+      deny_usage: '&cВикористання: /clan ally deny <клан>'
+      remove_usage: '&cВикористання: /clan ally remove <клан>'
+    help:
+      - '&6=== ClanAscend - Команди ==='
+      - '&e/clan &7- Відкрити меню клану'
+      - '&e/clan help &7- Показати цю довідку'
+      - '&e/clan create <назва> <тег> &7- Створити клан'
+      - '&e/clan invite <гравець> &7- Запросити гравця'
+      - '&e/clan accept <клан> &7- Прийняти запрошення'
+      - '&e/clan decline <клан> &7- Відхилити запрошення'
+      - '&e/clan kick <гравець> &7- Вигнати учасника'
+      - '&e/clan leave &7- Покинути свій клан'
+      - '&e/clan claim &7- Зайняти поточний чанк'
+      - '&e/clan unclaim &7- Звільнити поточний чанк'
+      - '&e/clan info &7- Показати інформацію про клан'
+      - '&e/clan list &7- Список кланів'
+      - '&e/clan chat &7- Увімкнути/вимкнути чат клану'
+      - '&e/clan top &7- Показати кращі клани'
+      - '&e/clan ally <клан> &7- Надіслати запит на союз'
+      - '&e/clan allies &7- Показати ваші союзи'
+    info:
+      - '&6=== Інформація про клан: &e{clan} &6==='
+      - '&eТег: &7[{tag}&7]'
+      - '&eЛідер: &7{leader}'
+      - '&eУчасники: &7{members}&7/&e{max_members}'
+      - '&eСила: &7{power}&7/&e{max_power}'
+      - '&eТериторії: &7{claims}&7/&e{max_claims}'
+      - '&eОпис: &7{desc}'
+      - '&eСтворений: &7{created}'
+      - '&eСтатус: &7{open}'
+    list:
+      header: '&6=== Активні клани ==='
+      empty: '&7Немає активних кланів.'
+      line: '&e{n}. &f{clan} &7[{tag}&7] &8- &f{members} учасників &8- &a{power} сили
+        &8- &2{claims} територій'
+      footer: '&7Всього: &e{total} кланів'
+    setdesc:
+      usage: '&cВикористання: /clan setdesc <опис>'
+    setlimit:
+      usage: '&cВикористання: /clan setlimit <5-50>'
+update:
+  console: 'Доступна нова версія: {latest} (Поточна: {current})'
+  player: '§6[ClanAscend] §eДоступна нова версія: §a{latest} §7(Поточна: §c{current}§7)'

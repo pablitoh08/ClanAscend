@@ -1,0 +1,6 @@
+org\pablito\clanAscend\utils\MessageUtil.class
+org\pablito\clanAscend\api\ClanAscendAPI.class
+org\pablito\clanAscend\api\impl\ClanAscendAPIImpl.class
+org\pablito\clanAscend\api\model\ClanRewardResult.class
+org\pablito\clanAscend\api\event\ClanPointsAddEvent.class
+org\pablito\clanAscend\api\event\ClanPowerAddEvent.class

@@ -1,0 +1,71 @@
+language: "en"
+fallback-language: 'en'
+
+clan:
+  creation-cost: 1000
+  description-max-length: 64
+  min-tag-length: 2
+  max-tag-length: 4
+  default-max-members: 20
+  default-power: 100
+  max-power: 1000
+
+claims:
+  enabled: true
+  claim-cost: 10
+  claim-refund: 5
+  prevent-block-break: true
+  prevent-block-place: true
+  prevent-pvp: true
+  prevent-mob-spawning: false
+  allowed-blocks:
+    - "GRASS"
+    - "TALL_GRASS"
+    - "FLOWERS"
+    - "DEAD_BUSH"
+
+power:
+  per-kill: 5
+  per-death: 2
+  per-minute-online: 0.1
+  events:
+    clan-war-win: 50
+    clan-war-lose: -20
+    raid-win: 30
+    raid-lose: -15
+
+chat:
+  format: "&8[&6Clan&8] &7{player}&8: &f{message}"
+
+  clan-chat-prefix: "!"
+
+gui:
+  main-title: "&8Clan: {clan}"
+  members-title: "&8Miembros - {clan}"
+  claims-title: "&8Claims - {clan}"
+  settings-title: "&8Configuración - {clan}"
+
+  update-interval: 20
+
+broadcast:
+  clan-creation: true
+  message: "&6{player} &7ha creado el clan &6{clan} &7[&6{tag}&7]!"
+
+  clan-disband: true
+  disband-message: "&cEl clan &6{clan} &cha sido eliminado!"
+
+database:
+  enabled: false
+  type: "sqlite" # or "mysql"
+  host: "localhost"
+  port: 3306
+  database: "clanascend"
+  username: "root"
+  password: ""
+
+# Debug
+debug: false
+alliances:
+  max-allies: 5
+  disable-pvp-between-allies: true
+  allow-build-in-ally-claims: false
