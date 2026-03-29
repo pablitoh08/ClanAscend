@@ -15,7 +15,15 @@ public interface ClanAscendAPI {
 
     String getClanId(UUID playerId);
 
+    default String getClanId(Player player) {
+        return player == null ? null : getClanId(player.getUniqueId());
+    }
+
     String getClanName(UUID playerId);
+
+    default String getClanName(Player player) {
+        return player == null ? null : getClanName(player.getUniqueId());
+    }
 
     String getClanNameById(String clanId);
 
