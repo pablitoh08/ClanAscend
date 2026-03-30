@@ -12,9 +12,8 @@ import org.pablito.clanAscend.managers.LanguageManager;
 import org.pablito.clanAscend.objects.Clan;
 import org.pablito.clanAscend.objects.ChunkLocation;
 
-import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 public class ClanAdminCommand implements CommandExecutor {
@@ -26,7 +25,7 @@ public class ClanAdminCommand implements CommandExecutor {
     public ClanAdminCommand(ClanAscend plugin) {
         this.plugin = plugin;
         this.clanManager = plugin.getClanManager();
-        this.lang = plugin.getLang();
+        this.lang = plugin.getLanguageManager();
     }
 
     @Override
@@ -85,7 +84,10 @@ public class ClanAdminCommand implements CommandExecutor {
         }
 
         plugin.reloadConfig();
-        lang.reload();
+        plugin.reloadLangFile();
+
+        // Reload clan data
+        clanManager.loadClans();
 
         lang.send(sender, "admin.reload.success");
     }
@@ -121,7 +123,7 @@ public class ClanAdminCommand implements CommandExecutor {
         }
 
         clan.setPower(power);
-        clanManager.saveAllClans();
+        clanManager.saveClan(clan);
 
         lang.send(sender, "admin.setpower.done",
                 lang.placeholders(
@@ -161,7 +163,7 @@ public class ClanAdminCommand implements CommandExecutor {
         }
 
         clan.setLevel(level);
-        clanManager.saveAllClans();
+        clanManager.saveClan(clan);
 
         lang.send(sender, "admin.setlevel.done",
                 lang.placeholders(
@@ -185,6 +187,14 @@ public class ClanAdminCommand implements CommandExecutor {
         if (clan == null) {
             lang.send(sender, "error.clan_not_found");
             return;
+        }
+
+        // Notify clan members before disband
+        for (UUID memberId : clan.getMembers()) {
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null && member.isOnline()) {
+                lang.send(member, "admin.disband.notify_member");
+            }
         }
 
         clanManager.disbandClan(clan, sender.getName());
@@ -226,12 +236,7 @@ public class ClanAdminCommand implements CommandExecutor {
         }
 
         if (clan.addMember(target.getUniqueId())) {
-            Map<UUID, String> playerClans = getPlayerClansMap();
-            if (playerClans != null) {
-                playerClans.put(target.getUniqueId(), clan.getId());
-            }
-
-            clanManager.saveAllClans();
+            clanManager.saveClan(clan);
 
             lang.send(sender, "admin.addmember.done",
                     lang.placeholders(
@@ -263,8 +268,11 @@ public class ClanAdminCommand implements CommandExecutor {
             return;
         }
 
-        lang.send(sender, "admin.info.header");
+        // Send header
+        lang.send(sender, "admin.info.header",
+                lang.placeholders("clan", clan.getName()));
 
+        // Basic info
         lang.send(sender, "admin.info.name",
                 lang.placeholders("name", clan.getName()));
         lang.send(sender, "admin.info.tag",
@@ -294,9 +302,12 @@ public class ClanAdminCommand implements CommandExecutor {
         lang.send(sender, "admin.info.desc",
                 lang.placeholders("desc", clan.getDescription()));
         lang.send(sender, "admin.info.created",
-                lang.placeholders("created", String.valueOf(clan.getCreationDate())));
+                lang.placeholders("created", clan.getFormattedCreationDate()));
+
+        // Status
+        String openStatus = clan.isOpen() ? lang.getRaw("admin.yes") : lang.getRaw("admin.no");
         lang.send(sender, "admin.info.open",
-                lang.placeholders("open", clan.isOpen() ? lang.get("admin.yes") : lang.get("admin.no")));
+                lang.placeholders("open", openStatus));
 
         Object ffObj = clan.getSettings().get("friendlyFire");
         boolean friendlyFire = false;
@@ -306,9 +317,11 @@ public class ClanAdminCommand implements CommandExecutor {
             friendlyFire = Boolean.parseBoolean(ffObj.toString());
         }
 
+        String ffStatus = friendlyFire ? lang.getRaw("admin.enabled") : lang.getRaw("admin.disabled");
         lang.send(sender, "admin.info.friendlyfire",
-                lang.placeholders("ff", friendlyFire ? lang.get("admin.enabled") : lang.get("admin.disabled")));
+                lang.placeholders("ff", ffStatus));
 
+        // Members list
         lang.send(sender, "admin.info.members_header",
                 lang.placeholders("count", String.valueOf(clan.getMemberCount())));
 
@@ -319,10 +332,10 @@ public class ClanAdminCommand implements CommandExecutor {
             Player member = Bukkit.getPlayer(memberId);
             boolean online = member != null && member.isOnline();
 
-            String status = online ? lang.get("admin.online") : lang.get("admin.offline");
-            String role = clan.isLeader(memberId) ? lang.get("admin.role_leader")
-                    : clan.isOfficer(memberId) ? lang.get("admin.role_officer")
-                    : lang.get("admin.role_member");
+            String status = online ? lang.getRaw("admin.online") : lang.getRaw("admin.offline");
+            String role = clan.isLeader(memberId) ? lang.getRaw("admin.role_leader")
+                    : clan.isOfficer(memberId) ? lang.getRaw("admin.role_officer")
+                    : lang.getRaw("admin.role_member");
 
             if (online) {
                 onlineCount++;
@@ -368,15 +381,10 @@ public class ClanAdminCommand implements CommandExecutor {
 
         clanAtLocation.removeClaim(chunk);
 
-        Map<ChunkLocation, String> claimedChunks = getClaimedChunksMap();
-        if (claimedChunks != null) {
-            claimedChunks.remove(chunk);
-        }
-
         int refund = plugin.getConfig().getInt("claims.claim-refund", 5);
         clanAtLocation.addPower(refund);
 
-        clanManager.saveAllClans();
+        clanManager.saveClan(clanAtLocation);
 
         lang.send(sender, "admin.forceunclaim.done",
                 lang.placeholders("clan", clanAtLocation.getName()));
@@ -387,7 +395,7 @@ public class ClanAdminCommand implements CommandExecutor {
     private String getPlayerName(UUID uuid) {
         OfflinePlayer off = Bukkit.getOfflinePlayer(uuid);
         String name = off != null ? off.getName() : null;
-        return name != null ? name : lang.get("system.offline_name");
+        return name != null ? name : lang.getRaw("system.offline_name");
     }
 
     private void showAdminHelp(CommandSender sender) {
@@ -396,30 +404,22 @@ public class ClanAdminCommand implements CommandExecutor {
             return;
         }
 
-        for (String line : lang.getList("admin.help")) {
-            lang.send(sender, line);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<UUID, String> getPlayerClansMap() {
-        try {
-            Field field = ClanManager.class.getDeclaredField("playerClans");
-            field.setAccessible(true);
-            return (Map<UUID, String>) field.get(clanManager);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<ChunkLocation, String> getClaimedChunksMap() {
-        try {
-            Field field = ClanManager.class.getDeclaredField("claimedChunks");
-            field.setAccessible(true);
-            return (Map<ChunkLocation, String>) field.get(clanManager);
-        } catch (Exception e) {
-            return null;
+        List<String> helpLines = lang.getList("admin.help");
+        if (helpLines.isEmpty()) {
+            sender.sendMessage("§6=== Admin Commands ===");
+            sender.sendMessage("§e/clanadmin help §7- Show this help");
+            sender.sendMessage("§e/clanadmin reload §7- Reload config and language");
+            sender.sendMessage("§e/clanadmin setpower <clan> <power> §7- Set power");
+            sender.sendMessage("§e/clanadmin setlevel <clan> <level> §7- Set level");
+            sender.sendMessage("§e/clanadmin disband <clan> §7- Disband clan");
+            sender.sendMessage("§e/clanadmin addmember <clan> <player> §7- Add member");
+            sender.sendMessage("§e/clanadmin info <clan> §7- View detailed info");
+            sender.sendMessage("§e/clanadmin forceunclaim §7- Force unclaim current chunk");
+        } else {
+            for (String line : helpLines) {
+                String formatted = line.replace("&", "§");
+                sender.sendMessage(formatted);
+            }
         }
     }
 }

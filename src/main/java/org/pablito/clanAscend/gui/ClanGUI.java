@@ -53,11 +53,26 @@ public class ClanGUI {
     public ClanGUI(ClanAscend plugin) {
         this.plugin = plugin;
         this.clanManager = plugin.getClanManager();
-        this.lang = plugin.getLang();
+        this.lang = plugin.getLanguageManager();
         this.memberUuidKey = new NamespacedKey(plugin, "member_uuid");
     }
 
-    // ---------------- MAIN ----------------
+    private List<String> getLangList(String path) {
+        String raw = lang.getRaw(path);
+        if (raw == null || raw.isEmpty()) return new ArrayList<>();
+        return Arrays.asList(raw.split("\\n"));
+    }
+
+    private String getFormatted(String path, String... replacements) {
+        String message = lang.getRaw(path);
+        if (message == null) return "";
+        for (int i = 0; i < replacements.length; i += 2) {
+            if (i + 1 < replacements.length) {
+                message = message.replace("{" + replacements[i] + "}", replacements[i + 1]);
+            }
+        }
+        return message;
+    }
 
     public void openClanGUI(Player player) {
         Clan clan = clanManager.getPlayerClan(player);
@@ -66,7 +81,7 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.titles.main").replace("{clan}", clan.getName());
+        String title = getFormatted("gui.titles.main", "clan", clan.getName());
         Inventory gui = Bukkit.createInventory(new ClanGuiHolder(GuiType.MAIN, clan.getId()), 54, net.kyori.adventure.text.Component.text(title));
 
         gui.setItem(4, createInfoItem(clan, player));
@@ -93,8 +108,6 @@ public class ClanGUI {
         player.openInventory(gui);
     }
 
-    // ---------------- CLAN CHEST ----------------
-
     public void openClanChestGUI(Player player) {
         Clan clan = clanManager.getPlayerClan(player);
         if (clan == null) {
@@ -102,7 +115,7 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.titles.chest").replace("{clan}", clan.getName());
+        String title = getFormatted("gui.titles.chest", "clan", clan.getName());
         Inventory inv = Bukkit.createInventory(new ClanGuiHolder(GuiType.CLAN_CHEST, clan.getId()), 54, net.kyori.adventure.text.Component.text(title));
 
         Object raw = clan.getSettings().get("clanChest");
@@ -127,7 +140,7 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.titles.members").replace("{clan}", clan.getName());
+        String title = getFormatted("gui.titles.members", "clan", clan.getName());
         Inventory gui = Bukkit.createInventory(new ClanGuiHolder(GuiType.MEMBERS, clan.getId()), 54, net.kyori.adventure.text.Component.text(title));
 
         int slot = 0;
@@ -138,10 +151,10 @@ public class ClanGUI {
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
 
             OfflinePlayer off = Bukkit.getOfflinePlayer(memberId);
-            String name = (off.getName() != null) ? off.getName() : lang.get("system.offline_name");
+            String name = (off.getName() != null) ? off.getName() : lang.getRaw("system.offline_name");
 
             meta.setOwningPlayer(off);
-            meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.members.member_name").replace("{player}", name)));
+            meta.displayName(net.kyori.adventure.text.Component.text(getFormatted("gui.members.member_name", "player", name)));
 
             boolean online = Bukkit.getPlayer(memberId) != null;
 
@@ -152,14 +165,14 @@ public class ClanGUI {
             String statusKey = online ? "gui.members.status.online" : "gui.members.status.offline";
 
             String extra = clan.hasPermission(player.getUniqueId(), "officer")
-                    ? lang.get("gui.members.extra.leader_hint")
-                    : lang.get("gui.members.extra.no_perm");
+                    ? lang.getRaw("gui.members.extra.leader_hint")
+                    : lang.getRaw("gui.members.extra.no_perm");
 
             List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-            for (String line : lang.getList("gui.members.member_lore")) {
+            for (String line : getLangList("gui.members.member_lore")) {
                 String formatted = line
-                        .replace("{role}", lang.get(roleKey))
-                        .replace("{status}", lang.get(statusKey))
+                        .replace("{role}", lang.getRaw(roleKey))
+                        .replace("{status}", lang.getRaw(statusKey))
                         .replace("{extra}", extra);
                 lore.add(net.kyori.adventure.text.Component.text(formatted));
             }
@@ -183,9 +196,9 @@ public class ClanGUI {
         }
 
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetId);
-        String targetName = (target.getName() != null) ? target.getName() : lang.get("system.offline_name");
+        String targetName = (target.getName() != null) ? target.getName() : lang.getRaw("system.offline_name");
 
-        String title = lang.get("gui.manage_member.title").replace("{player}", targetName);
+        String title = getFormatted("gui.manage_member.title", "player", targetName);
 
         Inventory gui = Bukkit.createInventory(
                 new ClanGuiHolder(GuiType.MEMBER_MANAGE, clan.getId(), targetId.toString()),
@@ -259,22 +272,22 @@ public class ClanGUI {
         OfflinePlayer off = Bukkit.getOfflinePlayer(targetId);
         meta.setOwningPlayer(off);
 
-        String role = clan.isLeader(targetId) ? lang.get("gui.members.roles.leader")
-                : clan.isOfficer(targetId) ? lang.get("gui.members.roles.officer")
-                : lang.get("gui.members.roles.member");
+        String role = clan.isLeader(targetId) ? lang.getRaw("gui.members.roles.leader")
+                : clan.isOfficer(targetId) ? lang.getRaw("gui.members.roles.officer")
+                : lang.getRaw("gui.members.roles.member");
 
         boolean online = Bukkit.getPlayer(targetId) != null;
 
-        String onlineStr = online ? lang.get("gui.members.status.online") : lang.get("gui.members.status.offline");
+        String onlineStr = online ? lang.getRaw("gui.members.status.online") : lang.getRaw("gui.members.status.offline");
 
         String bannedStr = clan.isBanned(targetId)
-                ? lang.get("gui.manage_member.info.banned_yes")
-                : lang.get("gui.manage_member.info.banned_no");
+                ? lang.getRaw("gui.manage_member.info.banned_yes")
+                : lang.getRaw("gui.manage_member.info.banned_no");
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.player.name").replace("{player}", targetName)));
+        meta.displayName(net.kyori.adventure.text.Component.text(getFormatted("gui.manage_member.player.name", "player", targetName)));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.player.lore")) {
+        for (String line : getLangList("gui.manage_member.player.lore")) {
             String formatted = line
                     .replace("{role}", role)
                     .replace("{online}", onlineStr)
@@ -295,7 +308,7 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.titles.claims").replace("{clan}", clan.getName());
+        String title = getFormatted("gui.titles.claims", "clan", clan.getName());
         Inventory gui = Bukkit.createInventory(new ClanGuiHolder(GuiType.CLAIMS, clan.getId()), 54, net.kyori.adventure.text.Component.text(title));
 
         int claimCost = plugin.getConfig().getInt("claims.claim-cost", plugin.getConfig().getInt("claims.claim_cost_power", 10));
@@ -303,10 +316,10 @@ public class ClanGUI {
 
         ItemStack info = new ItemStack(Material.MAP);
         ItemMeta meta = info.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.claims.info.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.claims.info.name")));
 
         List<net.kyori.adventure.text.Component> infoLore = new ArrayList<>();
-        for (String line : lang.getList("gui.claims.info.lore")) {
+        for (String line : getLangList("gui.claims.info.lore")) {
             String formatted = line
                     .replace("{claims}", String.valueOf(clan.getClaimCount()))
                     .replace("{max}", String.valueOf(clan.getMaxClaims()))
@@ -322,10 +335,10 @@ public class ClanGUI {
 
         ItemStack claimedItem = new ItemStack(Material.GRASS_BLOCK);
         ItemMeta claimMeta = claimedItem.getItemMeta();
-        claimMeta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.claims.claimed_item.name")));
+        claimMeta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.claims.claimed_item.name")));
 
         List<net.kyori.adventure.text.Component> claimedLore = new ArrayList<>();
-        for (String line : lang.getList("gui.claims.claimed_item.lore")) {
+        for (String line : getLangList("gui.claims.claimed_item.lore")) {
             claimedLore.add(net.kyori.adventure.text.Component.text(line));
         }
         claimMeta.lore(claimedLore);
@@ -341,10 +354,10 @@ public class ClanGUI {
         if (clan.hasPermission(player.getUniqueId(), "officer")) {
             ItemStack newClaim = new ItemStack(Material.EMERALD_BLOCK);
             ItemMeta newMeta = newClaim.getItemMeta();
-            newMeta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.claims.claim_button.name")));
+            newMeta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.claims.claim_button.name")));
 
             List<net.kyori.adventure.text.Component> newClaimLore = new ArrayList<>();
-            for (String line : lang.getList("gui.claims.claim_button.lore")) {
+            for (String line : getLangList("gui.claims.claim_button.lore")) {
                 newClaimLore.add(net.kyori.adventure.text.Component.text(line.replace("{cost}", String.valueOf(claimCost))));
             }
             newMeta.lore(newClaimLore);
@@ -353,10 +366,10 @@ public class ClanGUI {
 
             ItemStack unclaim = new ItemStack(Material.REDSTONE_BLOCK);
             ItemMeta unMeta = unclaim.getItemMeta();
-            unMeta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.claims.unclaim_button.name")));
+            unMeta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.claims.unclaim_button.name")));
 
             List<net.kyori.adventure.text.Component> unclaimLore = new ArrayList<>();
-            for (String line : lang.getList("gui.claims.unclaim_button.lore")) {
+            for (String line : getLangList("gui.claims.unclaim_button.lore")) {
                 unclaimLore.add(net.kyori.adventure.text.Component.text(line.replace("{refund}", String.valueOf(refund))));
             }
             unMeta.lore(unclaimLore);
@@ -375,15 +388,15 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.titles.settings").replace("{clan}", clan.getName());
+        String title = getFormatted("gui.titles.settings", "clan", clan.getName());
         Inventory gui = Bukkit.createInventory(new ClanGuiHolder(GuiType.SETTINGS, clan.getId()), 27, net.kyori.adventure.text.Component.text(title));
 
         ItemStack desc = new ItemStack(Material.BOOK);
         ItemMeta descMeta = desc.getItemMeta();
-        descMeta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.settings.description.name")));
+        descMeta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.settings.description.name")));
 
         List<net.kyori.adventure.text.Component> descLore = new ArrayList<>();
-        for (String line : lang.getList("gui.settings.description.lore")) {
+        for (String line : getLangList("gui.settings.description.lore")) {
             descLore.add(net.kyori.adventure.text.Component.text(line.replace("{desc}", clan.getDescription())));
         }
         descMeta.lore(descLore);
@@ -394,14 +407,14 @@ public class ClanGUI {
         ItemMeta openMeta = open.getItemMeta();
 
         openMeta.displayName(net.kyori.adventure.text.Component.text(clan.isOpen()
-                ? lang.get("gui.settings.open.name_open")
-                : lang.get("gui.settings.open.name_closed")));
+                ? lang.getRaw("gui.settings.open.name_open")
+                : lang.getRaw("gui.settings.open.name_closed")));
 
         List<net.kyori.adventure.text.Component> openLore = new ArrayList<>();
-        for (String line : lang.getList("gui.settings.open.lore")) {
+        for (String line : getLangList("gui.settings.open.lore")) {
             openLore.add(net.kyori.adventure.text.Component.text(line.replace("{status}", clan.isOpen()
-                    ? lang.get("gui.settings.open.status_open")
-                    : lang.get("gui.settings.open.status_closed"))));
+                    ? lang.getRaw("gui.settings.open.status_open")
+                    : lang.getRaw("gui.settings.open.status_closed"))));
         }
         openMeta.lore(openLore);
         open.setItemMeta(openMeta);
@@ -419,14 +432,14 @@ public class ClanGUI {
         ItemMeta ffMeta = ff.getItemMeta();
 
         ffMeta.displayName(net.kyori.adventure.text.Component.text(friendlyFire
-                ? lang.get("gui.settings.friendlyfire.name_on")
-                : lang.get("gui.settings.friendlyfire.name_off")));
+                ? lang.getRaw("gui.settings.friendlyfire.name_on")
+                : lang.getRaw("gui.settings.friendlyfire.name_off")));
 
         List<net.kyori.adventure.text.Component> ffLore = new ArrayList<>();
-        for (String line : lang.getList("gui.settings.friendlyfire.lore")) {
+        for (String line : getLangList("gui.settings.friendlyfire.lore")) {
             ffLore.add(net.kyori.adventure.text.Component.text(line.replace("{state}", friendlyFire
-                    ? lang.get("gui.settings.friendlyfire.state_on")
-                    : lang.get("gui.settings.friendlyfire.state_off"))));
+                    ? lang.getRaw("gui.settings.friendlyfire.state_on")
+                    : lang.getRaw("gui.settings.friendlyfire.state_off"))));
         }
         ffMeta.lore(ffLore);
         ff.setItemMeta(ffMeta);
@@ -434,10 +447,10 @@ public class ClanGUI {
 
         ItemStack maxMembers = new ItemStack(Material.PAPER);
         ItemMeta maxMeta = maxMembers.getItemMeta();
-        maxMeta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.settings.maxmembers.name")));
+        maxMeta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.settings.maxmembers.name")));
 
         List<net.kyori.adventure.text.Component> maxLore = new ArrayList<>();
-        for (String line : lang.getList("gui.settings.maxmembers.lore")) {
+        for (String line : getLangList("gui.settings.maxmembers.lore")) {
             maxLore.add(net.kyori.adventure.text.Component.text(line.replace("{max}", String.valueOf(clan.getMaxMembers()))));
         }
         maxMeta.lore(maxLore);
@@ -459,7 +472,7 @@ public class ClanGUI {
             return;
         }
 
-        String title = lang.get("gui.confirm_disband.title");
+        String title = lang.getRaw("gui.confirm_disband.title");
         Inventory gui = Bukkit.createInventory(new ClanGuiHolder(GuiType.CONFIRM_DISBAND, clan.getId()), 27, net.kyori.adventure.text.Component.text(title));
 
         ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -470,10 +483,10 @@ public class ClanGUI {
 
         ItemStack info = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta im = info.getItemMeta();
-        im.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.confirm_disband.info.name")));
+        im.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.confirm_disband.info.name")));
 
         List<net.kyori.adventure.text.Component> infoLore = new ArrayList<>();
-        for (String line : lang.getList("gui.confirm_disband.info.lore")) {
+        for (String line : getLangList("gui.confirm_disband.info.lore")) {
             infoLore.add(net.kyori.adventure.text.Component.text(line));
         }
         im.lore(infoLore);
@@ -482,10 +495,10 @@ public class ClanGUI {
 
         ItemStack confirm = new ItemStack(Material.LIME_WOOL);
         ItemMeta cm = confirm.getItemMeta();
-        cm.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.confirm_disband.accept.name")));
+        cm.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.confirm_disband.accept.name")));
 
         List<net.kyori.adventure.text.Component> confirmLore = new ArrayList<>();
-        for (String line : lang.getList("gui.confirm_disband.accept.lore")) {
+        for (String line : getLangList("gui.confirm_disband.accept.lore")) {
             confirmLore.add(net.kyori.adventure.text.Component.text(line));
         }
         cm.lore(confirmLore);
@@ -494,10 +507,10 @@ public class ClanGUI {
 
         ItemStack cancel = new ItemStack(Material.RED_WOOL);
         ItemMeta xm = cancel.getItemMeta();
-        xm.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.confirm_disband.cancel.name")));
+        xm.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.confirm_disband.cancel.name")));
 
         List<net.kyori.adventure.text.Component> cancelLore = new ArrayList<>();
-        for (String line : lang.getList("gui.confirm_disband.cancel.lore")) {
+        for (String line : getLangList("gui.confirm_disband.cancel.lore")) {
             cancelLore.add(net.kyori.adventure.text.Component.text(line));
         }
         xm.lore(cancelLore);
@@ -511,12 +524,12 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.BEACON);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.info.name")
-                .replace("{clan}", clan.getName())
-                .replace("{tag}", clan.getTag())));
+        meta.displayName(net.kyori.adventure.text.Component.text(getFormatted("gui.main.items.info.name",
+                "clan", clan.getName(),
+                "tag", clan.getTag())));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.info.lore")) {
+        for (String line : getLangList("gui.main.items.info.lore")) {
             String formatted = line
                     .replace("{leader}", clan.getLeaderName())
                     .replace("{members}", String.valueOf(clan.getMemberCount()))
@@ -539,10 +552,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.members.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.members.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.members.lore")) {
+        for (String line : getLangList("gui.main.items.members.lore")) {
             String formatted = line
                     .replace("{total}", String.valueOf(clan.getMemberCount()))
                     .replace("{online}", String.valueOf(getOnlineMembersCount(clan)));
@@ -558,10 +571,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.GRASS_BLOCK);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.claims.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.claims.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.claims.lore")) {
+        for (String line : getLangList("gui.main.items.claims.lore")) {
             String formatted = line
                     .replace("{claims}", String.valueOf(clan.getClaimCount()))
                     .replace("{max}", String.valueOf(clan.getMaxClaims()));
@@ -577,10 +590,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.power.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.power.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.power.lore")) {
+        for (String line : getLangList("gui.main.items.power.lore")) {
             String formatted = line
                     .replace("{power}", String.valueOf(clan.getPower()))
                     .replace("{max}", String.valueOf(clan.getMaxPower()));
@@ -596,10 +609,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.REDSTONE_TORCH);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.settings.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.settings.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.settings.lore")) {
+        for (String line : getLangList("gui.main.items.settings.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -612,10 +625,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.BOOK);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.chat.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.chat.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.chat.lore")) {
+        for (String line : getLangList("gui.main.items.chat.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -628,10 +641,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.GOLD_BLOCK);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.top.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.top.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.top.lore")) {
+        for (String line : getLangList("gui.main.items.top.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -643,10 +656,10 @@ public class ClanGUI {
     private ItemStack createChestItem() {
         ItemStack item = new ItemStack(Material.CHEST);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.chest.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.chest.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.chest.lore")) {
+        for (String line : getLangList("gui.main.items.chest.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -657,7 +670,7 @@ public class ClanGUI {
     private ItemStack createCloseItem() {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.common.close")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.common.close")));
         item.setItemMeta(meta);
         return item;
     }
@@ -665,7 +678,7 @@ public class ClanGUI {
     private ItemStack createBackItem() {
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.common.back")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.common.back")));
         item.setItemMeta(meta);
         return item;
     }
@@ -674,10 +687,10 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.main.items.disband.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.main.items.disband.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.main.items.disband.lore")) {
+        for (String line : getLangList("gui.main.items.disband.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -689,10 +702,10 @@ public class ClanGUI {
     private ItemStack createPromoteItem() {
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.promote.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.promote.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.promote.lore")) {
+        for (String line : getLangList("gui.manage_member.promote.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -703,10 +716,10 @@ public class ClanGUI {
     private ItemStack createDemoteItem() {
         ItemStack item = new ItemStack(Material.GOLD_INGOT);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.demote.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.demote.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.demote.lore")) {
+        for (String line : getLangList("gui.manage_member.demote.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -717,10 +730,10 @@ public class ClanGUI {
     private ItemStack createTransferItem() {
         ItemStack item = new ItemStack(Material.NETHERITE_INGOT);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.transfer.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.transfer.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.transfer.lore")) {
+        for (String line : getLangList("gui.manage_member.transfer.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -731,10 +744,10 @@ public class ClanGUI {
     private ItemStack createKickItem() {
         ItemStack item = new ItemStack(Material.REDSTONE);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.kick.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.kick.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.kick.lore")) {
+        for (String line : getLangList("gui.manage_member.kick.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -745,10 +758,10 @@ public class ClanGUI {
     private ItemStack createBanItem() {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.ban.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.ban.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.ban.lore")) {
+        for (String line : getLangList("gui.manage_member.ban.lore")) {
             lore.add(net.kyori.adventure.text.Component.text(line));
         }
         meta.lore(lore);
@@ -760,11 +773,11 @@ public class ClanGUI {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(net.kyori.adventure.text.Component.text(lang.get("gui.manage_member.disabled.name")));
+        meta.displayName(net.kyori.adventure.text.Component.text(lang.getRaw("gui.manage_member.disabled.name")));
 
         List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-        for (String line : lang.getList("gui.manage_member.disabled.lore")) {
-            lore.add(net.kyori.adventure.text.Component.text(line.replace("{reason}", lang.get(reasonKey))));
+        for (String line : getLangList("gui.manage_member.disabled.lore")) {
+            lore.add(net.kyori.adventure.text.Component.text(line.replace("{reason}", lang.getRaw(reasonKey))));
         }
         meta.lore(lore);
 
@@ -773,9 +786,9 @@ public class ClanGUI {
     }
 
     private String getPlayerRole(Clan clan, Player player) {
-        if (clan.isLeader(player.getUniqueId())) return lang.get("gui.members.roles.leader");
-        if (clan.isOfficer(player.getUniqueId())) return lang.get("gui.members.roles.officer");
-        return lang.get("gui.members.roles.member");
+        if (clan.isLeader(player.getUniqueId())) return lang.getRaw("gui.members.roles.leader");
+        if (clan.isOfficer(player.getUniqueId())) return lang.getRaw("gui.members.roles.officer");
+        return lang.getRaw("gui.members.roles.member");
     }
 
     private int getOnlineMembersCount(Clan clan) {

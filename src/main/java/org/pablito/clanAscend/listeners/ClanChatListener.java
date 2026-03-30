@@ -23,7 +23,7 @@ public class ClanChatListener implements Listener {
     public ClanChatListener(ClanAscend plugin) {
         this.plugin = plugin;
         this.clanManager = plugin.getClanManager();
-        this.lang = plugin.getLang();  // Cambiado de getLanguageManager() a getLang()
+        this.lang = plugin.getLanguageManager(); // CORREGIDO: usar getLanguageManager()
     }
 
     @EventHandler
@@ -45,12 +45,18 @@ public class ClanChatListener implements Listener {
                 .plainText()
                 .serialize(event.message());
 
-        // Obtener el formato del mensaje usando el sistema de LanguageManager
-        String format = lang.get("chat.format");
-        format = lang.format(format, lang.placeholders(
-                "player", player.getName(),
-                "message", message
-        ));
+        // Obtener el formato del mensaje usando getRaw y placeholders
+        String format = lang.getRaw("chat.format");
+        if (format == null || format.isEmpty()) {
+            format = "&8[&6{clan}&8] &7{player}&f: &e{message}";
+        }
+
+        // Reemplazar placeholders manualmente
+        format = format.replace("{player}", player.getName())
+                .replace("{message}", message)
+                .replace("{clan}", clan.getName())
+                .replace("{tag}", clan.getTag())
+                .replace("&", "§");
 
         for (UUID memberId : clan.getMembers()) {
             Player member = plugin.getServer().getPlayer(memberId);
@@ -65,14 +71,17 @@ public class ClanChatListener implements Listener {
 
         if (clanChatUsers.contains(player.getUniqueId())) {
             clanChatUsers.remove(player.getUniqueId());
+            lang.send(player, "chat.disabled");
             return false;
         }
 
         if (clanManager.hasClan(player)) {
             clanChatUsers.add(player.getUniqueId());
+            lang.send(player, "chat.enabled");
             return true;
         }
 
+        lang.send(player, "clan.not_in_clan");
         return false;
     }
 
@@ -83,6 +92,9 @@ public class ClanChatListener implements Listener {
 
     public void disableClanChat(Player player) {
         if (player == null) return;
-        clanChatUsers.remove(player.getUniqueId());
+        if (clanChatUsers.contains(player.getUniqueId())) {
+            clanChatUsers.remove(player.getUniqueId());
+            lang.send(player, "chat.disabled");
+        }
     }
 }

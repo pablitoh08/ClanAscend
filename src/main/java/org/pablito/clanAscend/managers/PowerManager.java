@@ -122,7 +122,6 @@ public class PowerManager {
             }
         }
 
-        // stats: deaths +1
         updatePlayerStats(victim.getUniqueId().toString(), false);
     }
 
@@ -167,14 +166,7 @@ public class PowerManager {
         Clan clan = plugin.getClanManager().getClan(clanId);
         if (clan == null) return;
 
-        LanguageManager lang = plugin.getLang();
-
-        // Obtener el mensaje y formatearlo con los placeholders
-        String message = lang.get(messageKey);
-        message = lang.format(message, lang.placeholders(
-                "amount", String.valueOf(amount),
-                "total", String.valueOf(total)
-        ));
+        LanguageManager lang = plugin.getLanguageManager();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             Clan pc = plugin.getClanManager().getPlayerClan(p);

@@ -2,128 +2,134 @@ package org.pablito.clanAscend.managers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.pablito.clanAscend.ClanAscend;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LanguageManager {
 
     private final ClanAscend plugin;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
-
-    private final Map<String, YamlConfiguration> languages = new HashMap<>();
-
-    private String currentLang;
-    private String fallbackLang;
+    private final MiniMessage miniMessage;
+    private final LegacyComponentSerializer sectionSerializer;
+    private final LegacyComponentSerializer ampersandSerializer;
 
     public LanguageManager(ClanAscend plugin) {
         this.plugin = plugin;
-        load();
+        this.miniMessage = MiniMessage.miniMessage();
+        this.sectionSerializer = LegacyComponentSerializer.legacySection();
+        this.ampersandSerializer = LegacyComponentSerializer.legacyAmpersand();
     }
 
-    public void load() {
-        plugin.reloadConfig();
+    /**
+     * Get raw string from language file
+     */
+    public String getRaw(String path) {
+        FileConfiguration lang = plugin.getLangConfig();
+        String message = lang.getString(path);
 
-        currentLang = plugin.getConfig().getString("language", "es");
-        fallbackLang = plugin.getConfig().getString("fallback-language", "en");
-
-        loadLanguages();
-    }
-
-    private void loadLanguages() {
-        File langFolder = new File(plugin.getDataFolder(), "lang");
-
-        if (!langFolder.exists()) {
-            langFolder.mkdirs();
+        if (message == null) {
+            return "<red>Missing message: " + path;
         }
 
-        saveDefaultLangs();
-
-        File[] files = langFolder.listFiles();
-        if (files == null) return;
-
-        for (File file : files) {
-            String name = file.getName();
-
-            if (!name.startsWith("messages_") || !name.endsWith(".yml")) continue;
-
-            String langCode = name.replace("messages_", "").replace(".yml", "");
-
-            languages.put(langCode, YamlConfiguration.loadConfiguration(file));
-        }
+        return message;
     }
 
-    private void saveDefaultLangs() {
-        String[] langs = {
-                "messages_es.yml",
-                "messages_en.yml",
-                "messages_fr.yml",
-                "messages_de.yml",
-                "messages_it.yml",
-                "messages_pl.yml",
-                "messages_pt_BR.yml",
-                "messages_ru.yml",
-                "messages_tr.yml",
-                "messages_uk.yml"
-        };
+    /**
+     * Get a list of strings from language file (supports multi-line strings split by \n)
+     */
+    public List<String> getList(String path) {
+        FileConfiguration lang = plugin.getLangConfig();
+        List<String> list = lang.getStringList(path);
 
-        for (String lang : langs) {
-            File file = new File(plugin.getDataFolder() + "/lang/", lang);
-            if (!file.exists()) {
-                plugin.saveResource("lang/" + lang, false);
+        if (list != null && !list.isEmpty()) {
+            return list;
+        }
+
+        // If not a list, try to get as string and split by newline
+        String single = lang.getString(path);
+        if (single != null && !single.isEmpty()) {
+            String[] lines = single.split("\\n");
+            List<String> result = new ArrayList<>();
+            for (String line : lines) {
+                result.add(line);
+            }
+            return result;
+        }
+
+        return new ArrayList<>();
+    }
+
+    /**
+     * Creates a map of placeholders from key-value pairs
+     * Usage: placeholders("player", "John", "clan", "Warriors")
+     */
+    public Map<String, String> placeholders(String... pairs) {
+        Map<String, String> placeholders = new HashMap<>();
+        for (int i = 0; i < pairs.length; i += 2) {
+            if (i + 1 < pairs.length) {
+                placeholders.put(pairs[i], pairs[i + 1]);
             }
         }
+        return placeholders;
     }
 
-    public String get(String path) {
-        String msg = null;
-
-        if (languages.containsKey(currentLang)) {
-            msg = languages.get(currentLang).getString(path);
+    /**
+     * Replace placeholders in a string
+     */
+    public String replacePlaceholders(String text, Map<String, String> placeholders) {
+        if (text == null || placeholders == null || placeholders.isEmpty()) {
+            return text;
         }
 
-        if (msg == null && languages.containsKey(fallbackLang)) {
-            msg = languages.get(fallbackLang).getString(path);
-        }
-
-        if (msg == null) {
-            msg = "<red>Missing message: " + path;
-        }
-
-        return msg;
-    }
-
-    public String format(String message, Map<String, String> placeholders) {
-        if (placeholders == null) return message;
-
+        String result = text;
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            message = message.replace("<" + entry.getKey() + ">", entry.getValue());
+            String value = entry.getValue() == null ? "" : entry.getValue();
+            result = result.replace("{" + entry.getKey() + "}", value);
         }
-
-        return message;
+        return result;
     }
 
-    private String colorize(String message) {
-        // HEX support: &#FFFFFF → <#FFFFFF>
-        message = message.replaceAll("(?i)&#([A-F0-9]{6})", "<#$1>");
-
-        // Legacy & → §
-        message = message.replace("&", "§");
-
-        return message;
+    /**
+     * Get formatted component with placeholders
+     */
+    public Component getComponent(String path) {
+        return getComponent(path, null);
     }
 
     public Component getComponent(String path, Map<String, String> placeholders) {
-        String message = get(path);
-        message = format(message, placeholders);
-        message = colorize(message);
+        String message = getRaw(path);
+        if (placeholders != null && !placeholders.isEmpty()) {
+            message = replacePlaceholders(message, placeholders);
+        }
 
-        return miniMessage.deserialize(message);
+        // Add prefix if the message doesn't already have it and it's not a raw message
+        if (!path.equals("prefix") && !path.startsWith("gui.") && !message.startsWith("§") && !message.startsWith("<")) {
+            String prefix = getRaw("prefix");
+            if (prefix != null && !prefix.isEmpty()) {
+                message = prefix + message;
+            }
+        }
+
+        try {
+            if (message.contains("§")) {
+                return sectionSerializer.deserialize(message);
+            }
+
+            if (message.contains("&")) {
+                return ampersandSerializer.deserialize(message);
+            }
+
+            return miniMessage.deserialize(message);
+        } catch (Exception ex) {
+            plugin.getLogger().warning("Could not parse lang key '" + path + "': " + ex.getMessage());
+            return Component.text("Invalid message: " + path);
+        }
     }
 
     public void send(CommandSender sender, String path) {
@@ -131,45 +137,7 @@ public class LanguageManager {
     }
 
     public void send(CommandSender sender, String path, Map<String, String> placeholders) {
-        Component component = getComponent(path, placeholders);
-
-        if (sender instanceof Player player) {
-            plugin.getAdventure().player(player).sendMessage(component);
-        } else {
-            sender.sendMessage(miniMessage.serialize(component));
-        }
-    }
-
-    public Map<String, String> placeholders(String... args) {
-        Map<String, String> map = new HashMap<>();
-
-        for (int i = 0; i < args.length; i += 2) {
-            map.put(args[i], args[i + 1]);
-        }
-
-        return map;
-    }
-
-    public void reload() {
-        languages.clear();
-        load();
-    }
-
-    public java.util.List<String> getList(String path) {
-        java.util.List<String> list = null;
-
-        if (languages.containsKey(currentLang)) {
-            list = languages.get(currentLang).getStringList(path);
-        }
-
-        if ((list == null || list.isEmpty()) && languages.containsKey(fallbackLang)) {
-            list = languages.get(fallbackLang).getStringList(path);
-        }
-
-        if (list == null || list.isEmpty()) {
-            return java.util.Collections.singletonList("<red>Missing list: " + path);
-        }
-
-        return list;
+        if (sender == null) return;
+        sender.sendMessage(getComponent(path, placeholders));
     }
 }

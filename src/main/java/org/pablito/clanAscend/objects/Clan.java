@@ -139,6 +139,16 @@ public class Clan {
         return members.remove(playerId);
     }
 
+    // NUEVOS MÉTODOS PARA OFICIALES
+    public boolean addOfficer(UUID playerId) {
+        if (!members.contains(playerId)) return false;
+        return officers.add(playerId);
+    }
+
+    public boolean removeOfficer(UUID playerId) {
+        return officers.remove(playerId);
+    }
+
     public boolean isMember(UUID playerId) { return members.contains(playerId); }
     public boolean isOfficer(UUID playerId) { return officers.contains(playerId); }
     public boolean isLeader(UUID playerId) { return leader.equals(playerId); }

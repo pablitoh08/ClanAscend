@@ -24,7 +24,7 @@ public class UpdateChecker {
         this.projectSlug = projectSlug;
         this.loader = loader;
         this.notifyOps = notifyOps;
-        this.lang = plugin.getLang();  // Cambiado de getLanguageManager() a getLang()
+        this.lang = plugin.getLanguageManager();
     }
 
     public void checkNowAsync() {
@@ -36,22 +36,30 @@ public class UpdateChecker {
                 if (latest == null || latest.isEmpty()) return;
                 if (equalsVersion(current, latest)) return;
 
-                // Mensaje en consola usando el archivo de idioma
-                String consoleMsg = lang.get("update.console")
-                        .replace("{latest}", latest)
-                        .replace("{current}", current);
-                plugin.getLogger().warning(consoleMsg);
+                String consoleMsg = lang.getRaw("update.console");
+                if (consoleMsg != null && !consoleMsg.isEmpty()) {
+                    consoleMsg = consoleMsg.replace("{latest}", latest)
+                            .replace("{current}", current);
+                    consoleMsg = consoleMsg.replace("&", "§");
+                    plugin.getLogger().warning(consoleMsg);
+                } else {
+                    plugin.getLogger().warning("New version available: " + latest + " (Current: " + current + ")");
+                }
 
-                // Mensaje para jugadores con permisos
                 if (notifyOps) {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         for (Player p : Bukkit.getOnlinePlayers()) {
                             if (p.isOp() || p.hasPermission("clanascend.admin")) {
-                                lang.send(p, "update.player",
-                                        lang.placeholders(
-                                                "latest", latest,
-                                                "current", current
-                                        ));
+                                String playerMsg = lang.getRaw("update.player");
+                                if (playerMsg != null && !playerMsg.isEmpty()) {
+                                    lang.send(p, "update.player",
+                                            lang.placeholders(
+                                                    "latest", latest,
+                                                    "current", current
+                                            ));
+                                } else {
+                                    p.sendMessage("§6[ClanAscend] §eNew version available: §a" + latest + " §7(Current: §c" + current + "§7)");
+                                }
                             }
                         }
                     });

@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.pablito.clanAscend.ClanAscend;
 import org.pablito.clanAscend.managers.LanguageManager;
 import org.pablito.clanAscend.objects.Clan;
-import org.pablito.clanAscend.objects.ClanClaim;
+import org.pablito.clanAscend.objects.ChunkLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,7 @@ public class TerritoryListener implements Listener {
         Location to = e.getTo();
         if (to == null) return;
 
+        // Check if chunk changed
         if (from.getWorld() != null && to.getWorld() != null) {
             if (from.getWorld().equals(to.getWorld())
                     && from.getChunk().getX() == to.getChunk().getX()
@@ -53,13 +54,30 @@ public class TerritoryListener implements Listener {
 
         if (equalsNullSafe(oldClanId, newClanId)) return;
 
+        LanguageManager lang = plugin.getLanguageManager();
+
         if (oldClanId != null && newClanId == null) {
-            sendExit(p);
+            // Exit territory
+            lang.send(p, "claim.exit");
         } else if (oldClanId == null) {
-            sendEnter(p, newTerritory);
+            // Enter territory
+            if (newTerritory.clanName != null) {
+                lang.send(p, "claim.enter",
+                        lang.placeholders(
+                                "clan", newTerritory.clanName,
+                                "tag", newTerritory.clanTag
+                        ));
+            }
         } else {
-            sendExit(p);
-            sendEnter(p, newTerritory);
+            // Changed from one territory to another
+            lang.send(p, "claim.exit");
+            if (newTerritory.clanName != null) {
+                lang.send(p, "claim.enter",
+                        lang.placeholders(
+                                "clan", newTerritory.clanName,
+                                "tag", newTerritory.clanTag
+                        ));
+            }
         }
 
         lastTerritory.put(p.getUniqueId(), newClanId);
@@ -75,42 +93,15 @@ public class TerritoryListener implements Listener {
         lastTerritory.remove(e.getPlayer().getUniqueId());
     }
 
-    private void sendEnter(Player player, TerritoryInfo info) {
-        LanguageManager lang = plugin.getLang();
-
-        String clanName = (info.clanName != null ? info.clanName : lang.get("system.unknown"));
-        String clanTag = (info.clanTag != null ? info.clanTag : "");
-
-        lang.send(player, "claim.enter",
-                lang.placeholders(
-                        "clan", clanName,
-                        "tag", clanTag
-                ));
-    }
-
-    private void sendExit(Player player) {
-        LanguageManager lang = plugin.getLang();
-        lang.send(player, "claim.exit");
-    }
-
     private TerritoryInfo resolveTerritory(Location loc) {
         try {
-            ClanClaim claim = plugin.getClaimManager().getChunkClaim(loc.getChunk());
-            if (claim != null) {
-                Clan clan = plugin.getClanManager().getClan(claim.getClanId());
-                if (clan != null) {
-                    return new TerritoryInfo(clan.getId(), clan.getName(), clan.getTag());
-                }
-                LanguageManager lang = plugin.getLang();
-                return new TerritoryInfo(claim.getClanId(), lang.get("system.unknown_clan"), "");
+            // Get clan at location using ClanManager
+            Clan clan = plugin.getClanManager().getClanAtLocation(loc);
+            if (clan != null) {
+                return new TerritoryInfo(clan.getId(), clan.getName(), clan.getTag());
             }
         } catch (Exception ignored) {
         }
-
-        try {
-            Clan clan = plugin.getClanManager().getClanAtLocation(loc);
-            if (clan != null) return new TerritoryInfo(clan.getId(), clan.getName(), clan.getTag());
-        } catch (Exception ignored) {}
 
         return new TerritoryInfo(null, null, null);
     }

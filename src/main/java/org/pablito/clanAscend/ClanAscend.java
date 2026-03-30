@@ -3,6 +3,8 @@ package org.pablito.clanAscend;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,6 +22,8 @@ import org.pablito.clanAscend.api.impl.ClanAscendAPIImpl;
 import org.pablito.clanAscend.utils.MessageUtil;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +49,9 @@ public class ClanAscend extends JavaPlugin {
 
     private static ClanAscendAPI api;
 
+    private FileConfiguration langConfig;
+    private File langFile;
+
     private final Map<UUID, PendingChatAction> pendingChatActions = new ConcurrentHashMap<UUID, PendingChatAction>();
 
     public static final String MODRINTH_PROJECT = "clanascend";
@@ -60,6 +67,7 @@ public class ClanAscend extends JavaPlugin {
         new Metrics(this, pluginId);
 
         saveDefaultConfig();
+        loadLangFile();
 
         try {
             ConfigUpdater.updateMainConfig(this);
@@ -69,6 +77,7 @@ public class ClanAscend extends JavaPlugin {
 
         try {
             ConfigUpdater.updateLanguageFiles(this);
+            reloadLangFile();
         } catch (Exception e) {
             getLogger().warning("No se pudieron actualizar los archivos de idioma automáticamente: " + e.getMessage());
         }
@@ -111,7 +120,7 @@ public class ClanAscend extends JavaPlugin {
         }
 
         getLogger().info("╔══════════════════════════════════════════╗");
-        getLogger().info("║              ClanAscend v1.8             ║");
+        getLogger().info("║              ClanAscend v1.9             ║");
         getLogger().info("║             Developed by Pablo           ║");
         getLogger().info("╚══════════════════════════════════════════╝");
 
@@ -209,6 +218,45 @@ public class ClanAscend extends JavaPlugin {
         pendingChatActions.clear();
         api = null;
         getLogger().info("ClanAscend disabled.");
+    }
+
+    public void loadLangFile() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+
+        langFile = new File(getDataFolder(), "lang.yml");
+
+        if (!langFile.exists()) {
+            saveResource("lang.yml", false);
+        }
+
+        langConfig = YamlConfiguration.loadConfiguration(langFile);
+    }
+
+    public FileConfiguration getLangConfig() {
+        return langConfig;
+    }
+
+    public void reloadLangFile() {
+        if (langFile == null) {
+            langFile = new File(getDataFolder(), "lang.yml");
+        }
+
+        langConfig = YamlConfiguration.loadConfiguration(langFile);
+    }
+
+    public void saveLangFile() {
+        if (langConfig == null || langFile == null) {
+            return;
+        }
+
+        try {
+            langConfig.save(langFile);
+        } catch (IOException e) {
+            getLogger().severe("Could not save lang.yml");
+            e.printStackTrace();
+        }
     }
 
     public PendingChatAction getPendingChatAction(UUID uuid) {

@@ -1,5 +1,5 @@
 name: ClanAscend
-version: 1.8
+version: 1.9
 main: org.pablito.clanAscend.ClanAscend
 api-version: 1.13
 softdepend: [PlaceholderAPI]

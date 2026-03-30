@@ -4,21 +4,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.pablito.clanAscend.ClanAscend;
 import org.pablito.clanAscend.objects.Clan;
 import org.pablito.clanAscend.objects.ChunkLocation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ClanManager {
 
@@ -35,7 +32,7 @@ public class ClanManager {
 
     public ClanManager(ClanAscend plugin) {
         this.plugin = plugin;
-        this.lang = plugin.getLang();  // Cambiado de getLanguageManager() a getLang()
+        this.lang = plugin.getLanguageManager(); // CORREGIDO: usar getLanguageManager() en lugar de getLang()
         loadClans();
     }
 
@@ -155,6 +152,11 @@ public class ClanManager {
         clansByName.remove(clan.getName().toLowerCase(Locale.ROOT));
         clansById.remove(clan.getId());
 
+        File clanFile = new File(plugin.getDataFolder(), "clans/" + clan.getId() + ".yml");
+        if (clanFile.exists()) {
+            clanFile.delete();
+        }
+
         if (plugin.getConfig().getBoolean("broadcast.clan-disband", true)) {
             String broadcast = plugin.getConfig().getString(
                     "broadcast.disband-message",
@@ -239,7 +241,7 @@ public class ClanManager {
         lang.send(player, "clan.joined",
                 lang.placeholders("clan", clan.getName()));
 
-        broadcastToClan(clan, lang.get("clan.member_joined")
+        broadcastToClan(clan, lang.getRaw("clan.member_joined")
                 .replace("{player}", player.getName()));
     }
 
@@ -285,7 +287,7 @@ public class ClanManager {
         lang.send(player, "clan.left",
                 lang.placeholders("clan", clan.getName()));
 
-        broadcastToClan(clan, lang.get("clan.member_left")
+        broadcastToClan(clan, lang.getRaw("clan.member_left")
                 .replace("{player}", player.getName()));
     }
 
@@ -328,7 +330,7 @@ public class ClanManager {
                     lang.placeholders("clan", clan.getName()));
         }
 
-        broadcastToClan(clan, lang.get("clan.member_kicked")
+        broadcastToClan(clan, lang.getRaw("clan.member_kicked")
                 .replace("{player}", target.getName()));
     }
 
@@ -421,6 +423,47 @@ public class ClanManager {
 
     public void saveClan(Clan clan) {
         if (clan == null) return;
+
+        File clansFolder = new File(plugin.getDataFolder(), "clans");
+        if (!clansFolder.exists()) {
+            clansFolder.mkdirs();
+        }
+
+        File clanFile = new File(clansFolder, clan.getId() + ".yml");
+        FileConfiguration data = YamlConfiguration.loadConfiguration(clanFile);
+
+        data.set("id", clan.getId());
+        data.set("name", clan.getName());
+        data.set("tag", clan.getTag());
+        data.set("leader", clan.getLeader().toString());
+        data.set("power", clan.getPower());
+        data.set("maxPower", clan.getMaxPower());
+
+        List<String> members = clan.getMembers().stream()
+                .map(UUID::toString)
+                .collect(Collectors.toList());
+        data.set("members", members);
+
+        List<String> officers = clan.getOfficers().stream()
+                .map(UUID::toString)
+                .collect(Collectors.toList());
+        data.set("officers", officers);
+
+        List<String> claimedChunksList = clan.getClaimedChunks().stream()
+                .map(ChunkLocation::toString)
+                .collect(Collectors.toList());
+        data.set("claimedChunks", claimedChunksList);
+
+        data.set("allies", new ArrayList<>(clan.getAllianceIds()));
+        data.set("allyRequestsIncoming", new ArrayList<>(clan.getIncomingAllianceRequests()));
+        data.set("allyRequestsOutgoing", new ArrayList<>(clan.getOutgoingAllianceRequests()));
+
+        try {
+            data.save(clanFile);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to save clan: " + clan.getName());
+            e.printStackTrace();
+        }
     }
 
     public void saveAllClans() {
@@ -430,6 +473,76 @@ public class ClanManager {
     }
 
     public void loadClans() {
+        File clansFolder = new File(plugin.getDataFolder(), "clans");
+        if (!clansFolder.exists()) {
+            clansFolder.mkdirs();
+            return;
+        }
+
+        File[] clanFiles = clansFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+        if (clanFiles == null) return;
+
+        for (File file : clanFiles) {
+            try {
+                FileConfiguration data = YamlConfiguration.loadConfiguration(file);
+
+                String name = data.getString("name");
+                String tag = data.getString("tag");
+                UUID leader = UUID.fromString(data.getString("leader"));
+
+                Clan clan = new Clan(name, tag, leader);
+
+                clan.setPower(data.getInt("power", 100));
+                clan.setMaxPower(data.getInt("maxPower", 1000));
+
+                List<String> members = data.getStringList("members");
+                for (String member : members) {
+                    clan.addMember(UUID.fromString(member));
+                }
+
+                List<String> officers = data.getStringList("officers");
+                for (String officer : officers) {
+                    clan.addOfficer(UUID.fromString(officer));
+                }
+
+                List<String> claimedChunksList = data.getStringList("claimedChunks");
+                for (String chunkStr : claimedChunksList) {
+                    ChunkLocation chunk = ChunkLocation.fromString(chunkStr);
+                    if (chunk != null) {
+                        clan.getClaimedChunks().add(chunk);
+                        claimedChunks.put(chunk, clan.getId());
+                    }
+                }
+
+                List<String> allies = data.getStringList("allies");
+                for (String ally : allies) {
+                    clan.addAlliance(ally);
+                }
+
+                List<String> incomingRequests = data.getStringList("allyRequestsIncoming");
+                for (String request : incomingRequests) {
+                    clan.addIncomingAllianceRequest(request);
+                }
+
+                List<String> outgoingRequests = data.getStringList("allyRequestsOutgoing");
+                for (String request : outgoingRequests) {
+                    clan.addOutgoingAllianceRequest(request);
+                }
+
+                clansById.put(clan.getId(), clan);
+                clansByName.put(clan.getName().toLowerCase(Locale.ROOT), clan);
+
+                for (UUID member : clan.getMembers()) {
+                    playerClans.put(member, clan.getId());
+                }
+
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to load clan from file: " + file.getName());
+                e.printStackTrace();
+            }
+        }
+
+        plugin.getLogger().info("Loaded " + clansById.size() + " clans");
     }
 
     public void sendAllianceRequest(Player player, String targetClanName) {
@@ -495,10 +608,10 @@ public class ClanManager {
             lang.send(player, "alliance.accepted_auto",
                     lang.placeholders("clan", targetClan.getName()));
 
-            broadcastToClan(senderClan, lang.get("alliance.established")
+            broadcastToClan(senderClan, lang.getRaw("alliance.established")
                     .replace("{clan}", targetClan.getName()));
 
-            broadcastToClan(targetClan, lang.get("alliance.established")
+            broadcastToClan(targetClan, lang.getRaw("alliance.established")
                     .replace("{clan}", senderClan.getName()));
             return;
         }
@@ -512,7 +625,7 @@ public class ClanManager {
         lang.send(player, "alliance.request_sent",
                 lang.placeholders("clan", targetClan.getName()));
 
-        notifyClanOfficers(targetClan, lang.get("alliance.request_received")
+        notifyClanOfficers(targetClan, lang.getRaw("alliance.request_received")
                 .replace("{clan}", senderClan.getName())
                 .replace("{player}", player.getName()));
 
@@ -567,10 +680,10 @@ public class ClanManager {
         lang.send(player, "alliance.request_accepted",
                 lang.placeholders("clan", otherClan.getName()));
 
-        broadcastToClan(ownClan, lang.get("alliance.established")
+        broadcastToClan(ownClan, lang.getRaw("alliance.established")
                 .replace("{clan}", otherClan.getName()));
 
-        broadcastToClan(otherClan, lang.get("alliance.established")
+        broadcastToClan(otherClan, lang.getRaw("alliance.established")
                 .replace("{clan}", ownClan.getName()));
     }
 
@@ -609,7 +722,7 @@ public class ClanManager {
         lang.send(player, "alliance.request_denied",
                 lang.placeholders("clan", otherClan.getName()));
 
-        notifyClanOfficers(otherClan, lang.get("alliance.request_denied_notify")
+        notifyClanOfficers(otherClan, lang.getRaw("alliance.request_denied_notify")
                 .replace("{clan}", ownClan.getName()));
     }
 
@@ -653,7 +766,7 @@ public class ClanManager {
         lang.send(player, "alliance.removed",
                 lang.placeholders("clan", otherClan.getName()));
 
-        broadcastToClan(otherClan, lang.get("alliance.removed_notify")
+        broadcastToClan(otherClan, lang.getRaw("alliance.removed_notify")
                 .replace("{clan}", ownClan.getName()));
     }
 
@@ -717,7 +830,7 @@ public class ClanManager {
 
                 saveClan(ally);
 
-                broadcastToClan(ally, lang.get("alliance.removed_notify")
+                broadcastToClan(ally, lang.getRaw("alliance.removed_notify")
                         .replace("{clan}", clan.getName()));
             }
         }
@@ -738,9 +851,9 @@ public class ClanManager {
             }
         }
 
-        clan.getSettings().put("allies", new ArrayList<String>());
-        clan.getSettings().put("allyRequestsIncoming", new ArrayList<String>());
-        clan.getSettings().put("allyRequestsOutgoing", new ArrayList<String>());
+        clan.getAllianceIds().clear();
+        clan.getIncomingAllianceRequests().clear();
+        clan.getOutgoingAllianceRequests().clear();
 
         saveClan(clan);
     }
@@ -748,14 +861,13 @@ public class ClanManager {
     private void notifyClanOfficers(Clan clan, String message) {
         if (clan == null) return;
 
-        Set<UUID> recipients = new HashSet<>(clan.getMembers());
-        recipients.addAll(clan.getOfficers());
+        Set<UUID> recipients = new HashSet<>(clan.getOfficers());
         recipients.add(clan.getLeader());
 
         for (UUID memberId : recipients) {
             Player online = Bukkit.getPlayer(memberId);
             if (online != null && online.isOnline()) {
-                online.sendMessage(lang.get("prefix") + message);
+                online.sendMessage(lang.getRaw("prefix") + message);
             }
         }
     }
@@ -763,8 +875,7 @@ public class ClanManager {
     private void sendAllianceAcceptHint(Clan targetClan, Clan senderClan) {
         if (targetClan == null || senderClan == null) return;
 
-        Set<UUID> recipients = new HashSet<>(targetClan.getMembers());
-        recipients.addAll(targetClan.getOfficers());
+        Set<UUID> recipients = new HashSet<>(targetClan.getOfficers());
         recipients.add(targetClan.getLeader());
 
         for (UUID memberId : recipients) {
@@ -784,7 +895,7 @@ public class ClanManager {
         for (UUID memberId : clan.getMembers()) {
             Player online = Bukkit.getPlayer(memberId);
             if (online != null && online.isOnline()) {
-                online.sendMessage(lang.get("prefix") + message);
+                online.sendMessage(lang.getRaw("prefix") + message);
             }
         }
     }

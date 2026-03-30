@@ -15,7 +15,7 @@ public class EffectsManager {
 
     public EffectsManager(ClanAscend plugin) {
         this.plugin = plugin;
-        this.lang = plugin.getLang();  // Cambiado de getLanguageManager() a getLang()
+        this.lang = plugin.getLanguageManager();
     }
 
     public void showClaimEffect(Location center, @SuppressWarnings("unused") Clan clan) {
@@ -70,17 +70,23 @@ public class EffectsManager {
             world.spawnParticle(Particle.HEART, particleLoc, 1);
         }
 
-        String title = lang.get("power.gain_title").replace("{amount}", String.valueOf(amount));
-        String subtitle = lang.get("power.gain_subtitle");
+        String titleRaw = lang.getRaw("power.gain_title");
+        String subtitleRaw = lang.getRaw("power.gain_subtitle");
+
+        String title = titleRaw != null ? titleRaw.replace("{amount}", String.valueOf(amount)) : "&a+{amount} Power";
+        String subtitle = subtitleRaw != null ? subtitleRaw : "&7Power gained!";
+
+        title = title.replace("&", "§");
+        subtitle = subtitle.replace("&", "§");
 
         player.showTitle(
                 net.kyori.adventure.title.Title.title(
                         net.kyori.adventure.text.Component.text(title),
                         net.kyori.adventure.text.Component.text(subtitle),
                         net.kyori.adventure.title.Title.Times.times(
-                                Duration.ofMillis(500),  // fadeIn (10 ticks)
-                                Duration.ofMillis(2000), // stay (40 ticks)
-                                Duration.ofMillis(500)   // fadeOut (10 ticks)
+                                Duration.ofMillis(500),
+                                Duration.ofMillis(2000),
+                                Duration.ofMillis(500)
                         )
                 )
         );
@@ -100,8 +106,14 @@ public class EffectsManager {
             world.spawnParticle(Particle.CLOUD, particleLoc, 1);
         }
 
-        String title = lang.get("power.loss_title").replace("{amount}", String.valueOf(amount));
-        String subtitle = lang.get("power.loss_subtitle");
+        String titleRaw = lang.getRaw("power.loss_title");
+        String subtitleRaw = lang.getRaw("power.loss_subtitle");
+
+        String title = titleRaw != null ? titleRaw.replace("{amount}", String.valueOf(amount)) : "&c-{amount} Power";
+        String subtitle = subtitleRaw != null ? subtitleRaw : "&7Power lost!";
+
+        title = title.replace("&", "§");
+        subtitle = subtitle.replace("&", "§");
 
         player.showTitle(
                 net.kyori.adventure.title.Title.title(
@@ -130,8 +142,16 @@ public class EffectsManager {
             world.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.5f);
         }
 
-        String title = lang.get("power.levelup_title").replace("{level}", String.valueOf(newLevel));
-        String subtitle = lang.get("power.levelup_subtitle");
+        String titleRaw = lang.getRaw("power.levelup_title");
+        String subtitleRaw = lang.getRaw("power.levelup_subtitle");
+
+        String title = titleRaw != null ? titleRaw.replace("{level}", String.valueOf(newLevel)) : "&aLevel Up!";
+        String subtitle = subtitleRaw != null ? subtitleRaw : "&7Clan reached level {level}";
+        subtitle = subtitle.replace("{level}", String.valueOf(newLevel));
+
+        // Reemplazar colores
+        title = title.replace("&", "§");
+        subtitle = subtitle.replace("&", "§");
 
         player.showTitle(
                 net.kyori.adventure.title.Title.title(

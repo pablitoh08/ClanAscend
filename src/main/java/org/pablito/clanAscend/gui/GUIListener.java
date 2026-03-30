@@ -17,8 +17,6 @@ import org.pablito.clanAscend.managers.ClanManager;
 import org.pablito.clanAscend.managers.LanguageManager;
 import org.pablito.clanAscend.objects.Clan;
 
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.UUID;
 
 public class GUIListener implements Listener {
@@ -34,7 +32,7 @@ public class GUIListener implements Listener {
         this.plugin = plugin;
         this.clanManager = plugin.getClanManager();
         this.clanGUI = plugin.getClanGUI();
-        this.lang = plugin.getLang();  // Cambiado de getLanguageManager() a getLang()
+        this.lang = plugin.getLanguageManager(); // CORREGIDO
         this.memberUuidKey = new NamespacedKey(plugin, "member_uuid");
     }
 
@@ -125,6 +123,7 @@ public class GUIListener implements Listener {
                 break;
 
             case 24:
+                // Show power info
                 lang.send(player, "gui.main.power_chat",
                         lang.placeholders(
                                 "power", String.valueOf(clan.getPower()),
@@ -220,30 +219,32 @@ public class GUIListener implements Listener {
 
         boolean isLeader = clan.isLeader(player.getUniqueId());
 
+        // Handle promote/demote (slot 10)
         if (slot == 10 && isLeader) {
             if (!clan.isLeader(targetId) && !player.getUniqueId().equals(targetId)) {
                 if (clan.isOfficer(targetId)) {
-                    clan.getOfficers().remove(targetId);
+                    clan.removeOfficer(targetId);
                     lang.send(player, "clan.member_demoted");
                 } else {
                     if (clan.isMember(targetId)) {
-                        clan.getOfficers().add(targetId);
+                        clan.addOfficer(targetId);
                         lang.send(player, "clan.member_promoted");
                     }
                 }
-                clanManager.saveAllClans();
+                clanManager.saveClan(clan);
             }
             clanGUI.openMemberManageGUI(player, targetId);
             return;
         }
 
+        // Handle transfer leadership (slot 16)
         if (slot == 16 && isLeader) {
             if (!clan.isLeader(targetId) && !player.getUniqueId().equals(targetId) && clan.isMember(targetId)) {
                 UUID oldLeader = clan.getLeader();
                 clan.setLeader(targetId);
-                clan.getOfficers().remove(targetId);
-                clan.getOfficers().add(oldLeader);
-                clanManager.saveAllClans();
+                clan.removeOfficer(targetId);
+                clan.addOfficer(oldLeader);
+                clanManager.saveClan(clan);
 
                 lang.send(player, "clan.leadership_transferred");
                 clanGUI.openClanGUI(player);
@@ -251,44 +252,42 @@ public class GUIListener implements Listener {
             return;
         }
 
+        // Handle kick (slot 22)
         if (slot == 22 && clan.hasPermission(player.getUniqueId(), "officer")) {
             if (!clan.isLeader(targetId) && !player.getUniqueId().equals(targetId) && clan.isMember(targetId)) {
                 clan.removeMember(targetId);
 
-                Map<UUID, String> playerClans = getPlayerClansMap();
-                if (playerClans != null) {
-                    playerClans.remove(targetId);
-                }
-
                 Player target = plugin.getServer().getPlayer(targetId);
                 if (target != null && target.isOnline()) {
-                    lang.send(target, "clan.you_were_kicked",
-                            lang.placeholders("clan", clan.getName()));
+                    lang.send(target, "clan.player_kicked_clan",
+                            lang.placeholders(
+                                    "player", target.getName(),
+                                    "by", player.getName()
+                            ));
                 }
 
-                clanManager.saveAllClans();
+                clanManager.saveClan(clan);
                 clanGUI.openMembersGUI(player);
             }
             return;
         }
 
+        // Handle ban (slot 24)
         if (slot == 24 && clan.hasPermission(player.getUniqueId(), "officer")) {
             if (!clan.isLeader(targetId) && !player.getUniqueId().equals(targetId) && clan.isMember(targetId)) {
                 clan.ban(targetId);
                 clan.removeMember(targetId);
 
-                Map<UUID, String> playerClans = getPlayerClansMap();
-                if (playerClans != null) {
-                    playerClans.remove(targetId);
-                }
-
                 Player target = plugin.getServer().getPlayer(targetId);
                 if (target != null && target.isOnline()) {
-                    lang.send(target, "clan.you_were_kicked",
-                            lang.placeholders("clan", clan.getName()));
+                    lang.send(target, "clan.player_kicked_clan",
+                            lang.placeholders(
+                                    "player", target.getName(),
+                                    "by", player.getName()
+                            ));
                 }
 
-                clanManager.saveAllClans();
+                clanManager.saveClan(clan);
                 clanGUI.openMembersGUI(player);
             }
         }
@@ -332,10 +331,12 @@ public class GUIListener implements Listener {
                 clan.setOpen(!clan.isOpen());
                 clanManager.saveClan(clan);
                 clanGUI.openSettingsGUI(player);
+
+                String state = clan.isOpen()
+                        ? lang.getRaw("gui.settings.open.status_open")
+                        : lang.getRaw("gui.settings.open.status_closed");
                 lang.send(player, "clan.toggled_open",
-                        lang.placeholders("state", clan.isOpen()
-                                ? lang.get("gui.settings.open.status_open")
-                                : lang.get("gui.settings.open.status_closed")));
+                        lang.placeholders("state", state));
                 break;
 
             case 14:
@@ -348,10 +349,14 @@ public class GUIListener implements Listener {
                 }
 
                 clan.getSettings().put("friendlyFire", !current);
-
                 clanManager.saveClan(clan);
                 clanGUI.openSettingsGUI(player);
-                lang.send(player, !current ? "clan.friendly_fire_enabled" : "clan.friendly_fire_disabled");
+
+                if (!current) {
+                    lang.send(player, "clan.friendly_fire_enabled");
+                } else {
+                    lang.send(player, "clan.friendly_fire_disabled");
+                }
                 break;
 
             case 16:
@@ -383,17 +388,6 @@ public class GUIListener implements Listener {
 
             default:
                 break;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<UUID, String> getPlayerClansMap() {
-        try {
-            Field field = ClanManager.class.getDeclaredField("playerClans");
-            field.setAccessible(true);
-            return (Map<UUID, String>) field.get(clanManager);
-        } catch (Exception e) {
-            return null;
         }
     }
 }

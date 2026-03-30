@@ -10,6 +10,7 @@ import org.pablito.clanAscend.managers.LanguageManager;
 import org.pablito.clanAscend.objects.Clan;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class ClanCommand implements CommandExecutor {
@@ -21,14 +22,14 @@ public class ClanCommand implements CommandExecutor {
     public ClanCommand(ClanAscend plugin) {
         this.plugin = plugin;
         this.clanManager = plugin.getClanManager();
-        this.lang = plugin.getLang();
+        this.lang = plugin.getLanguageManager();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender instanceof Player player)) {
-            lang.send(sender, "error.players_only");
+            lang.send(sender, "system.command_only_players");
             return true;
         }
 
@@ -64,6 +65,13 @@ public class ClanCommand implements CommandExecutor {
                     lang.send(player, "command.clan.create.usage");
                     return true;
                 }
+
+                // Validate tag length
+                if (args[2].length() < 2 || args[2].length() > 4) {
+                    lang.send(player, "command.clan.create.bad_tag");
+                    return true;
+                }
+
                 clanManager.createClan(player, args[1], args[2]);
                 return true;
 
@@ -221,7 +229,7 @@ public class ClanCommand implements CommandExecutor {
                 clanManager.saveClan(clan);
 
                 lang.send(player, "clan.limit_set",
-                        lang.placeholders("limit", String.valueOf(clamped)));
+                        lang.placeholders("max", String.valueOf(clamped)));
                 return true;
             }
 
@@ -276,44 +284,54 @@ public class ClanCommand implements CommandExecutor {
                     return true;
                 }
 
+                // Send header
                 lang.send(player, "clan.info.header",
-                        lang.placeholders(
-                                "clan", clan.getName(),
-                                "tag", clan.getTag()
-                        ));
+                        lang.placeholders("clan", clan.getName()));
 
+                // Send tag line
+                lang.send(player, "clan.info.line_tag",
+                        lang.placeholders("tag", clan.getTag()));
+
+                // Send leader line
+                lang.send(player, "clan.info.line_leader",
+                        lang.placeholders("leader", clan.getLeaderName()));
+
+                // Send members line
                 lang.send(player, "clan.info.line_members",
                         lang.placeholders(
                                 "members", String.valueOf(clan.getMemberCount()),
                                 "max_members", String.valueOf(clan.getMaxMembers())
                         ));
 
+                // Send power line
                 lang.send(player, "clan.info.line_power",
                         lang.placeholders(
                                 "power", String.valueOf(clan.getPower()),
                                 "max_power", String.valueOf(clan.getMaxPower())
                         ));
 
+                // Send claims line
                 lang.send(player, "clan.info.line_claims",
                         lang.placeholders(
                                 "claims", String.valueOf(clan.getClaimCount()),
                                 "max_claims", String.valueOf(clan.getMaxClaims())
                         ));
 
+                // Send level line
                 lang.send(player, "clan.info.line_level",
                         lang.placeholders(
                                 "level", String.valueOf(clan.getLevel()),
                                 "experience", String.valueOf(clan.getExperience())
                         ));
 
+                // Send allies line
                 lang.send(player, "clan.info.line_allies",
-                        lang.placeholders(
-                                "allies", String.valueOf(clan.getAllianceIds().size())
-                        ));
+                        lang.placeholders("allies", String.valueOf(clan.getAllianceIds().size())));
 
+                // Send description line
                 String desc = clan.getDescription();
                 if (desc == null || desc.isEmpty()) {
-                    desc = lang.get("clan.no_description");
+                    desc = lang.getRaw("clan.no_description");
                 }
 
                 lang.send(player, "clan.info.line_description",
@@ -322,15 +340,79 @@ public class ClanCommand implements CommandExecutor {
                 return true;
             }
 
+            case "top":
+            case "list":
+                showTopClans(player);
+                return true;
+
+            case "chat":
+                if (plugin.getClanChatListener() != null) {
+                    boolean enabled = plugin.getClanChatListener().toggleClanChat(player);
+                    lang.send(player, enabled ? "chat.toggled_on" : "chat.toggled_off");
+                } else {
+                    lang.send(player, "error.chat_not_available");
+                }
+                return true;
+
             default:
                 lang.send(player, "error.unknown_command");
+                showHelp(player);
                 return true;
         }
     }
 
     private void showHelp(Player player) {
-        for (String line : lang.getList("command.clan.help")) {
-            lang.send(player, line);
+        List<String> helpLines = lang.getList("command.clan.help");
+        if (helpLines.isEmpty()) {
+            // Default help if language file doesn't have it
+            player.sendMessage("§6=== ClanAscend - Commands ===");
+            player.sendMessage("§e/clan §7- Open clan menu");
+            player.sendMessage("§e/clan help §7- Show this help");
+            player.sendMessage("§e/clan create <name> <tag> §7- Create a clan");
+            player.sendMessage("§e/clan invite <player> §7- Invite a player");
+            player.sendMessage("§e/clan accept <clan> §7- Accept an invite");
+            player.sendMessage("§e/clan decline <clan> §7- Decline an invite");
+            player.sendMessage("§e/clan kick <player> §7- Kick a member");
+            player.sendMessage("§e/clan leave §7- Leave your clan");
+            player.sendMessage("§e/clan claim §7- Claim current chunk");
+            player.sendMessage("§e/clan unclaim §7- Unclaim current chunk");
+            player.sendMessage("§e/clan info §7- Show clan info");
+            player.sendMessage("§e/clan list §7- List clans");
+            player.sendMessage("§e/clan chat §7- Toggle clan chat");
+            player.sendMessage("§e/clan top §7- Show top clans");
+            player.sendMessage("§e/clan ally <clan> §7- Send alliance request");
+            player.sendMessage("§e/clan allies §7- Show your alliances");
+        } else {
+            for (String line : helpLines) {
+                lang.send(player, line);
+            }
         }
+    }
+
+    private void showTopClans(Player player) {
+        // This would need to be implemented with your leaderboard manager
+        lang.send(player, "top.header");
+
+        List<Clan> topClans = plugin.getLeaderboardManager() != null
+                ? plugin.getLeaderboardManager().getTopClans(10)
+                : new java.util.ArrayList<>();
+
+        if (topClans.isEmpty()) {
+            lang.send(player, "top.empty");
+        } else {
+            int rank = 1;
+            for (Clan clan : topClans) {
+                lang.send(player, "top.line",
+                        lang.placeholders(
+                                "rank", String.valueOf(rank++),
+                                "name", clan.getName(),
+                                "tag", clan.getTag(),
+                                "power", String.valueOf(clan.getPower()),
+                                "members", String.valueOf(clan.getMemberCount())
+                        ));
+            }
+        }
+
+        lang.send(player, "top.footer");
     }
 }
